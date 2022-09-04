@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using StoryEngine;
 
 public class TestSprite : Sprite
 {
@@ -10,6 +11,7 @@ public class TestSprite : Sprite
     public override void _Ready()
     {
         GD.Print("Hello, world!");
+        GD.Print((new Story()).Test);
     }
 
     public override void _Process(float delta)

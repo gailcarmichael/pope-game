@@ -2,11 +2,15 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pope Game", "Pope Game.csproj", "{B05C23E7-9AD6-45D7-B802-09844375A52B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{A7D469FB-13B5-4689-A34B-9F6F1911D6B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StoryEngine", "lib\StoryEngine\StoryEngine.csproj", "{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-	Debug|Any CPU = Debug|Any CPU
-	ExportDebug|Any CPU = ExportDebug|Any CPU
-	ExportRelease|Any CPU = ExportRelease|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		ExportDebug|Any CPU = ExportDebug|Any CPU
+		ExportRelease|Any CPU = ExportRelease|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B05C23E7-9AD6-45D7-B802-09844375A52B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -15,5 +19,14 @@ Global
 		{B05C23E7-9AD6-45D7-B802-09844375A52B}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{B05C23E7-9AD6-45D7-B802-09844375A52B}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
 		{B05C23E7-9AD6-45D7-B802-09844375A52B}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E88280D2-8BE6-4B1B-85FD-102ECEC2D687} = {A7D469FB-13B5-4689-A34B-9F6F1911D6B0}
 	EndGlobalSection
 EndGlobal

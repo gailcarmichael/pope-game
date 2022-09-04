@@ -1,6 +1,11 @@
 <Project Sdk="Godot.NET.Sdk/3.3.0">
+  <ItemGroup>
+    <ProjectReference Include="lib\StoryEngine\StoryEngine.csproj" />
+  </ItemGroup>
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>PopeGame</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>  
   </PropertyGroup>
 </Project>
