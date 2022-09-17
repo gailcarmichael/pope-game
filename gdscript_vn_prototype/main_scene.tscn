@@ -1,0 +1,118 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Background.jpg" type="Texture" id=1]
+[ext_resource path="res://spacecutie.png" type="Texture" id=2]
+[ext_resource path="res://DialogueContainer.png" type="Texture" id=3]
+[ext_resource path="res://dialogue.gd" type="Script" id=4]
+[ext_resource path="res://dialogue_runner.gd" type="Script" id=5]
+[ext_resource path="res://fonts/poco/Poco.tres" type="DynamicFont" id=6]
+[ext_resource path="res://fonts/poco/Poco.ttf" type="DynamicFontData" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 31
+outline_size = 8
+outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
+use_mipmaps = true
+extra_spacing_top = -18
+extra_spacing_bottom = 2
+extra_spacing_char = 1
+extra_spacing_space = 1
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 30
+outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
+use_mipmaps = true
+extra_spacing_top = -18
+extra_spacing_bottom = 2
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 30
+outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
+use_mipmaps = true
+extra_spacing_top = -18
+extra_spacing_bottom = 2
+font_data = ExtResource( 7 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Background" type="Sprite" parent="."]
+position = Vector2( 512.5, 300 )
+scale = Vector2( 0.533854, 0.555555 )
+texture = ExtResource( 1 )
+
+[node name="left_pos" type="Position2D" parent="."]
+position = Vector2( 184, 283 )
+
+[node name="Control" type="Control" parent="."]
+margin_top = 5.0
+margin_right = 1021.0
+margin_bottom = 600.0
+script = ExtResource( 5 )
+
+[node name="space_cutie" type="Sprite" parent="Control"]
+position = Vector2( 183, 278 )
+scale = Vector2( 0.56, 0.55 )
+texture = ExtResource( 2 )
+offset = Vector2( 16.0714, -81.8181 )
+
+[node name="DialogueContainer" type="Sprite" parent="Control"]
+position = Vector2( 513, 510 )
+scale = Vector2( 0.550592, 0.537926 )
+texture = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="Control/DialogueContainer"]
+margin_left = -899.032
+margin_top = -180.322
+margin_right = -838.032
+margin_bottom = -154.322
+rect_scale = Vector2( 2, 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Name"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/DialogueContainer"]
+margin_left = -886.0
+margin_top = -121.0
+margin_right = 890.0
+margin_bottom = 111.0
+custom_colors/default_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color_selected = Color( 0, 0, 0, 1 )
+custom_fonts/normal_font = ExtResource( 6 )
+bbcode_enabled = true
+
+[node name="Tween" type="Tween" parent="Control/DialogueContainer"]
+
+[node name="Button" type="Button" parent="Control"]
+visible = false
+margin_left = 523.0
+margin_top = 170.0
+margin_right = 760.0
+margin_bottom = 215.0
+custom_colors/font_color_disabled = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_focus = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_hover = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_pressed = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_fonts/font = SubResource( 3 )
+action_mode = 0
+
+[node name="Button2" type="Button" parent="Control"]
+visible = false
+margin_left = 521.0
+margin_top = 320.0
+margin_right = 758.0
+margin_bottom = 365.0
+custom_colors/font_color_disabled = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_focus = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_hover = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_colors/font_color_pressed = Color( 0.929412, 0.690196, 0.898039, 1 )
+custom_fonts/font = SubResource( 2 )
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource( 4 )
+
+[connection signal="pressed" from="Control/Button" to="Control" method="_on_Button_pressed"]
+[connection signal="pressed" from="Control/Button2" to="Control" method="_on_Button2_pressed"]
