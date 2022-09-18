@@ -8,7 +8,9 @@ namespace StoryEngine.StoryNodes
         
         // @Element(name="outcome")
         protected Outcome? _outcome;
-        Outcome? Outcome { get; set; }
+        Outcome? Outcome {
+            get => _outcome;
+            set => _outcome = value; }
         
               
         Choice(
@@ -23,7 +25,7 @@ namespace StoryEngine.StoryNodes
         // //////////////////////////////////////////////////////////////////////////////////////
         
         
-        // boolean isValid(StoryElementCollection elements)
+        // boolean IsValid(StoryElementCollection elements)
         // {
         //     boolean isValid = true;
             
