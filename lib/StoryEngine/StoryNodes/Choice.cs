@@ -1,3 +1,5 @@
+using StoryEngine.StoryElements;
+
 namespace StoryEngine.StoryNodes
 {
     internal class Choice
@@ -25,16 +27,16 @@ namespace StoryEngine.StoryNodes
         // //////////////////////////////////////////////////////////////////////////////////////
         
         
-        // boolean IsValid(StoryElementCollection elements)
-        // {
-        //     boolean isValid = true;
+        bool IsValid(StoryElementCollection elements)
+        {
+            bool isValid = true;
             
-        //     if (m_outcome != null)
-        //     {
-        //         isValid = m_outcome.isValid(elements);
-        //     }
+            if (_outcome != null)
+            {
+                isValid = _outcome.IsValid(elements);
+            }
             
-        //     return isValid;
-        // }
+            return isValid;
+        }
     }
 }

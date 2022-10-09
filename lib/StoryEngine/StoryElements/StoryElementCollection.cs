@@ -27,8 +27,8 @@ namespace StoryEngine.StoryElements
         }
         
         
-        int NumElementsPriorityCalc() => StoryElementsPriorityCalc().Count;        
-        List<StoryElement> StoryElementsPriorityCalc() => _storyElementsPriorityCalc;
+        internal int NumElementsPriorityCalc() => StoryElementsPriorityCalc().Count;        
+        internal List<StoryElement> StoryElementsPriorityCalc() => _storyElementsPriorityCalc;
         
         
         void PrintStoryElements()
@@ -40,9 +40,9 @@ namespace StoryEngine.StoryElements
         }
         
         
-        bool HasElementWithID(string id) => ElementWithID(id) != null;
+        internal bool HasElementWithID(string id) => ElementWithID(id) != null;
         
-        StoryElement? ElementWithID(string id)
+        internal StoryElement? ElementWithID(string id)
         {
             StoryElement? elementWithID = null;
             
@@ -59,7 +59,7 @@ namespace StoryEngine.StoryElements
         }
         
         
-        List<string> IDs()
+        internal List<string> IDs()
         {
             List<string> ids = new List<string>();
             
@@ -77,9 +77,9 @@ namespace StoryEngine.StoryElements
             
             return ids;
         }
-        
-        
-        List<string> DesireValueIDs()
+
+
+        internal List<string> DesireValueIDs()
         {
             List<string> ids = new List<string>();
             
@@ -97,8 +97,8 @@ namespace StoryEngine.StoryElements
             
             return ids;
         }
-        
-        List<string> MemoryValueIDs()
+
+        internal List<string> MemoryValueIDs()
         {
             return DesireValueIDs();
         }

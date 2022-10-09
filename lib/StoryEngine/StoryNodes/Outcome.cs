@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using StoryEngine.StoryElements;
 
 namespace StoryEngine.StoryNodes
 {    
@@ -12,31 +13,31 @@ namespace StoryEngine.StoryNodes
         string? OutcomeText { get; }
 
         // @ElementList(inline=true, required=false)
-        //protected List<QuantifiableModifier> _quantifiableModifiers;
+        protected List<QuantifiableModifier> _quantifiableModifiers;
 
         // @ElementList(inline=true, required=false)
-        // protected List<TagModifier> _taggableModifiers;
+        protected List<TagModifier> _taggableModifiers;
 
-
-        // Can delete this so long as creating a new List as a default argument works
-        // Outcome(String outcomeText)
-        // {
-        //     this(outcomeText, new List<QuantifiableModifier>(), new List<TagModifier>());	
-        // }
 
         Outcome(
-            string outcomeText
-            //List<QuantifiableModifier> quantModifiers = new List<QuantifiableModifier>(),
-            //List<TagModifier> taggableModifiers = new List<TagModifier>()
+            string outcomeText,
+            List<QuantifiableModifier>? quantModifiers = null,
+            List<TagModifier>? taggableModifiers = null
         )
         {
             _outcomeText = outcomeText;
+
+            _quantifiableModifiers = new List<Outcome.QuantifiableModifier>();
+            if (quantModifiers != null)
+            {
+                _quantifiableModifiers.AddRange(quantModifiers);
+            }
             
-            // m_quantifiableModifiers = new List<Outcome.QuantifiableModifier>();
-            // if (quantModifiers != null) m_quantifiableModifiers.addAll(quantModifiers);
-            
-            // m_taggableModifiers = new List<Outcome.TagModifier>();
-            // if (taggableModifiers != null) m_taggableModifiers.addAll(taggableModifiers);
+            _taggableModifiers = new List<Outcome.TagModifier>();
+            if (taggableModifiers != null)
+            {
+                _taggableModifiers.AddRange(taggableModifiers);
+            }
         }
         
                 
@@ -44,77 +45,79 @@ namespace StoryEngine.StoryNodes
         //////////////////////////////////////////////////////////////////////////////////////
 
 
-        // void add(QuantifiableModifier m)
-        // {
-        //     if (m != null)
-        //     {
-        //         m_quantifiableModifiers.add(m);
-        //     }
-        // }
+        void Add(QuantifiableModifier? m)
+        {
+            if (m != null)
+            {
+                _quantifiableModifiers.Add(m);
+            }
+        }
 
-        // void add(TagModifier m)
-        // {
-        //     if (m != null)
-        //     {
-        //         m_taggableModifiers.add(m);
-        //     }
-        // }
+        void Add(TagModifier? m)
+        {
+            if (m != null)
+            {
+                _taggableModifiers.Add(m);
+            }
+        }
         
 
         //////////////////////////////////////////////////////////////////////////////////////
         
         
-        // boolean isValid(StoryElementCollection elements)
-        // {
-        //     boolean isValid = true;
+        internal bool IsValid(StoryElementCollection elements)
+        {
+            bool isValid = true;
             
-        //     // Check quantifiable modifiers
-        //     if (m_quantifiableModifiers != null)
-        //     {
-        //         for (QuantifiableModifier modifier : m_quantifiableModifiers)
-        //         {
-        //             if (!elements.hasElementWithID(modifier.getID()))
-        //             {
-        //                 System.err.println("Quantifiable modifier is not valid because element" +
-        //                         " with id " + modifier.getID() + "  is not part of the element collection.");
-        //                 isValid = false;
-        //             }
-        //             else if (elements.getElementWithID(modifier.getID()).getType() != ElementType.quantifiable &&
-        //                     elements.getElementWithID(modifier.getID()).getType() != ElementType.quantifiableStoryStateOnly)
-        //             {
-        //                 System.err.println("Quantifiable modifier is not valid because element" +
-        //                         " with id " + modifier.getID() + "  has type " + 
-        //                         elements.getElementWithID(modifier.getID()).getType());
-        //                 isValid = false;
-        //             }
-        //         }
-        //     }
-            
-            
-        //     // Check tag modifiers
-        //     if (m_taggableModifiers != null)
-        //     {
-        //         for (TagModifier modifier : m_taggableModifiers)
-        //         {
-        //             if (!elements.hasElementWithID(modifier.getID()))
-        //             {
-        //                 System.err.println("Taggable modifier is not valid because element" +
-        //                         " with id " + modifier.getID() + "  is not part of the element collection.");
-        //                 isValid = false;
-        //             }
-        //             else if (elements.getElementWithID(modifier.getID()).getType() != ElementType.taggable)
-        //             {
-        //                 System.err.println("Taggable modifier is not valid because element" +
-        //                         " with id " + modifier.getID() + "  has type " + 
-        //                         elements.getElementWithID(modifier.getID()).getType());
-        //                 isValid = false;
-        //             }
-        //         }
-        //     }
+            // Check quantifiable modifiers
+            if (_quantifiableModifiers != null)
+            {
+                foreach (QuantifiableModifier modifier in _quantifiableModifiers)
+                {
+                    StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
+                    if (elementWithID == null)
+                    {
+                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                                " with id " + modifier.ElementID + "  is not part of the element collection.");
+                        isValid = false;
+                    }
+                    else if (elementWithID.Type != ElementType.quantifiable &&
+                             elementWithID.Type != ElementType.quantifiableStoryStateOnly)
+                    {
+                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                                " with id " + modifier.ElementID + "  has type " +
+                                elementWithID.Type);
+                        isValid = false;
+                    }
+                }
+            }
             
             
-        //     return isValid;
-        // }
+            // Check tag modifiers
+            if (_taggableModifiers != null)
+            {
+                foreach (TagModifier modifier in _taggableModifiers)
+                {
+                    StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
+                    if (elementWithID == null)
+                    {
+                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                                " with id " + modifier.ElementID + "  is not part of the element collection.");
+                        isValid = false;
+                    }
+                    else if (elementWithID.Type != ElementType.taggable)
+                    {
+                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                                " with id " + modifier.ElementID + "  has type " +
+                                elementWithID.Type);
+                        isValid = false;
+                    }
+                }
+            }
+            
+            
+            return isValid;
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////
         
@@ -159,69 +162,59 @@ namespace StoryEngine.StoryNodes
 
         
         // @Root(name="quantModifier")
-        // static class QuantifiableModifier
-        // {
-        //     @Attribute(name="id")
-        //     protected String m_elementID;
+        internal class QuantifiableModifier
+        {
+            //@Attribute(name="id")
+            protected string _elementID;
+            internal string ElementID => _elementID;
 
-        //     @Attribute(name="absolute")
-        //     protected boolean m_absolute;
+            //@Attribute(name="absolute")
+            protected bool _absolute;
+            internal bool Absolute => _absolute;
 
-        //     @Text
-        //     protected int m_delta;
+            //@Text
+            protected int _delta;
+            internal int Delta => _delta;
 
-
-        //     QuantifiableModifier(
-        //             @Attribute(name="id") String id, 
-        //             @Attribute(name="absolute") boolean absolute,
-        //             @Text int delta)
-        //     {
-        //         m_elementID = id;
-        //         m_absolute = absolute;
-        //         m_delta = delta;
-        //     }
-            
-            
-        //     String getID() { return m_elementID; }
-        //     boolean getAbsolute() { return m_absolute; }
-        //     int getDelta() { return m_delta; }
-        // }
+            QuantifiableModifier(string id, bool absolute, int delta)
+            {
+                _elementID = id;
+                _absolute = absolute;
+                _delta = delta;
+            }
+        }
 
         
         //////////////////////////////////////////////////////////////////////////////////////
         
         
-        // static enum TagAction
-        // {
-        //     add,
-        //     remove
-        // }
+        internal enum TagAction
+        {
+            add,
+            remove
+        }
 
         
         // //////////////////////////////////////////////////////////////////////////////////////
 
         
         // @Root(name="tagModifier")
-        // static class TagModifier
-        // {
-        //     @Attribute(name="id")
-        //     protected String m_elementID;
+        internal class TagModifier
+        {
+            //@Attribute(name="id")
+            protected string _elementID;
+            internal string ElementID => _elementID;
 
-        //     @Text
-        //     protected TagAction m_action;
+            //@Text
+            protected TagAction _action;
+            internal TagAction Action => _action;
 
 
-        //     TagModifier(
-        //             @Attribute(name="id") String id,
-        //             @Text TagAction action)
-        //     {
-        //         m_elementID = id;
-        //         m_action = action;
-        //     }
-            
-            
-        //     String getID() { return m_elementID; }
-        //     TagAction getAction() { return m_action; }
-        // }
+            TagModifier(string id, TagAction action)
+            {
+                _elementID = id;
+                _action = action;
+            }
+        }
     }
 }
