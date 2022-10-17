@@ -11,7 +11,7 @@ public class TestSprite : Sprite
     public override void _Ready()
     {
         GD.Print("Hello, world!");
-        GD.Print((new Story()).Test);
+        GD.Print(new StoryEngineAPI("filename", "otherFilename"));
     }
 
     public override void _Process(float delta)
