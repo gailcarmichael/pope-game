@@ -126,7 +126,7 @@ internal class StoryState
     ///////////////////////////////////////////////////////////////
         
         
-    internal float GetValueForElement(string id)
+    internal float ValueForElement(string id)
     {
         if (_elementValues.ContainsKey(id))
         {
@@ -196,8 +196,8 @@ internal class StoryState
     ///////////////////////////////////////////////////////////////
 
 
-    internal int GetNumScenesSeen() { return _scenesSeen.Count; }
-    internal List<StoryNode> GetScenesSeen() { return _scenesSeen; }
+    internal int NumScenesSeen() { return _scenesSeen.Count; }
+    internal List<StoryNode> ScenesSeen() { return _scenesSeen; }
 
 
     internal void AddNodeToScenesSeen(StoryNode n)
@@ -241,7 +241,7 @@ internal class StoryState
         return seenScene;
     }
         
-    float GetProminenceForMostRecentNodeWithElement(string elementID)
+    float ProminenceForMostRecentNodeWithElement(string elementID)
     {
         float desire = -1;
 
@@ -261,7 +261,7 @@ internal class StoryState
     ///////////////////////////////////////////////////////////////
 
 
-    internal float GetLargestDesireValue()
+    internal float LargestDesireValue()
     {
         return _elementDesires.Values.Max();
     }

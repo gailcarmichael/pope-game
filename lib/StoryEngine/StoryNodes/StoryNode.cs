@@ -31,7 +31,7 @@ namespace StoryEngine.StoryNodes
         // protected FunctionalDescription m_functionalDesc;
 
         // @Element(name="prerequisite", required=false)
-        // protected Prerequisite m_prerequisite;
+        protected Prerequisite _prerequisite;
 
         // @ElementList(name="choices", inline=true, required=false)
         protected List<Choice> _choices;
@@ -40,7 +40,7 @@ namespace StoryEngine.StoryNodes
         protected int _selectedChoiceIndex;
 
 
-        StoryNode (
+        internal StoryNode (
             string id,  
 			NodeType type,
 			bool lastNode,
@@ -48,7 +48,7 @@ namespace StoryEngine.StoryNodes
 			string teaserImage, 
 			string eventText,
 			//FunctionalDescription funcDesc,
-			//Prerequisite prerequisite,
+			Prerequisite prerequisite,
 			List<Choice> choices
         )
         {
@@ -59,7 +59,7 @@ namespace StoryEngine.StoryNodes
             _teaserImage = teaserImage;
             _eventText = eventText;
             //_functionalDesc = funcDesc;
-            //_prerequisite = prerequisite;
+            _prerequisite = prerequisite;
             _choices = choices;
             
             resetNode();
@@ -103,17 +103,17 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // boolean passesPrerequisite(StoryState storyState)
-        // {
-        //     if (m_prerequisite == null)
-        //     {
-        //         return true;
-        //     }
-        //     else
-        //     {
-        //         return m_prerequisite.passes(storyState);
-        //     }
-        // }
+        bool PassesPrerequisite(StoryState storyState)
+        {
+            if (_prerequisite == null)
+            {
+                return true;
+            }
+            else
+            {
+                return _prerequisite.Passes(storyState);
+            }
+        }
         
         
         // ////////////////////////////////////////////////////////////////

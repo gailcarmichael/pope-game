@@ -113,7 +113,7 @@ namespace StoryEngine.StoryNodes
 
         //////////////////////////////////////////////////////////////////////////////////////
 
-        bool Passes(/*StoryState storyState*/)
+        internal bool Passes(StoryState storyState)
         {
             bool passes = true;
 
@@ -122,7 +122,7 @@ namespace StoryEngine.StoryNodes
             {
                 foreach (QuantifiableElementRequirement req in _quantifiableRequirements)
                 {
-                    //if (!req.passes(storyState))
+                    if (!req.Passes(storyState))
                     {
                         passes = false;
                         break;
@@ -135,7 +135,7 @@ namespace StoryEngine.StoryNodes
             {
                 foreach (TagRequirement req in _tagRequirements)
                 {
-                    //if (!req.passes(storyState))
+                    if (!req.Passes(storyState))
                     {
                         passes = false;
                         break;
@@ -148,7 +148,7 @@ namespace StoryEngine.StoryNodes
             {
                 foreach (SceneRequirement req in _sceneRequirements)
                 {
-                    //if (!req.passes(storyState))
+                    if (!req.Passes(storyState))
                     {
                         passes = false;
                         break;
@@ -210,11 +210,11 @@ namespace StoryEngine.StoryNodes
                 _compareTo = compareTo;
             }
 
-            bool passes(/*StoryState storyState*/)
+            internal bool Passes(StoryState storyState)
             {
                 bool passes = false;
 
-                float stateValue = 0;//storyState.getValueForElement(m_elementID);
+                float stateValue = storyState.ValueForElement(_elementID);
 
                 switch (_operator)
                 {
@@ -267,11 +267,11 @@ namespace StoryEngine.StoryNodes
                 _operator = op;
             }
 
-            internal bool passes(/*StoryState storyState*/)
+            internal bool Passes(StoryState storyState)
             {
-                return false;/*(_operator == ListRestriction.contains) ?
-                            storyState.taggedWithElement(_elementID) :
-                            !storyState.taggedWithElement(_elementID);*/
+                return (_operator == ListRestriction.contains) ?
+                            storyState.TaggedWithElement(_elementID) :
+                            !storyState.TaggedWithElement(_elementID);
             }
         }
 
@@ -294,11 +294,11 @@ namespace StoryEngine.StoryNodes
                 _operator = op;
             }
 
-            bool passes(/*StoryState storyState*/)
+            internal bool Passes(StoryState storyState)
             {
-                return false;/*(_operator == SceneRestriction.seen) ?
-                        storyState.haveSeenScene(_sceneID) :
-                        !storyState.haveSeenScene(_sceneID);*/
+                return (_operator == SceneRestriction.seen) ?
+                        storyState.HaveSeenScene(_sceneID) :
+                        !storyState.HaveSeenScene(_sceneID);
             }
         }
     }

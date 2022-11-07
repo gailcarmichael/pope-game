@@ -122,40 +122,40 @@ namespace StoryEngine.StoryNodes
         //////////////////////////////////////////////////////////////////////////////////////
         
         
-        // void applyOutcome(StoryState state, StoryElementCollection c)
-        // {
-        //     if (!isValid(c)) return;
+        void ApplyOutcome(StoryState state, StoryElementCollection c)
+        {
+            if (!IsValid(c)) return;
             
-        //     for (QuantifiableModifier modifier : m_quantifiableModifiers)
-        //     {
+            foreach (QuantifiableModifier modifier in _quantifiableModifiers)
+            {
                 
-        //         float value = state.getValueForElement(modifier.getID());
+                float value = state.ValueForElement(modifier.ElementID);
                 
-        //         if (modifier.getAbsolute())
-        //         {
-        //             value = modifier.getDelta();
-        //         }
-        //         else
-        //         {
-        //             value += modifier.getDelta();
-        //         }
+                if (modifier.Absolute)
+                {
+                    value = modifier.Delta;
+                }
+                else
+                {
+                    value += modifier.Delta;
+                }
                 
-        //         state.setValueForElement(modifier.getID(), value);
-        //     }
+                state.SetValueForElement(modifier.ElementID, value);
+            }
             
             
-        //     for (TagModifier modifier : m_taggableModifiers)
-        //     {
-        //         if (modifier.getAction() == TagAction.add)
-        //         {
-        //             state.addTag(modifier.getID());
-        //         }
-        //         else if (modifier.getAction() == TagAction.remove)
-        //         {
-        //             state.removeTag(modifier.getID());
-        //         }
-        //     }
-        // }
+            foreach (TagModifier modifier in _taggableModifiers)
+            {
+                if (modifier.Action == TagAction.add)
+                {
+                    state.AddTag(modifier.ElementID);
+                }
+                else if (modifier.Action == TagAction.remove)
+                {
+                    state.RemoveTag(modifier.ElementID);
+                }
+            }
+        }
         
 
         //////////////////////////////////////////////////////////////////////////////////////
