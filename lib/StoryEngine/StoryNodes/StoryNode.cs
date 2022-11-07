@@ -6,13 +6,14 @@ namespace StoryEngine.StoryNodes
     {
         // @Attribute(name="id")
         protected string _id;
-        string ID => _id;
+        internal string ID => _id;
         
         // @Attribute(name="type")
         protected NodeType _type;
         
         // @Attribute(name="lastNode", required=false)
-        protected bool _lastNode;
+        protected bool _isLastNode;
+        bool IsLastNode => _isLastNode;
 
         // @Element(name="teaserText")
         protected string _teaserText;
@@ -53,7 +54,7 @@ namespace StoryEngine.StoryNodes
         {
             _id = id;
             _type = type;
-            _lastNode = false;
+            _isLastNode = false;
             _teaserText = teaserText;
             _teaserImage = teaserImage;
             _eventText = eventText;
@@ -63,9 +64,6 @@ namespace StoryEngine.StoryNodes
             
             resetNode();
         }
-
-
-        bool IsLastNode() => _lastNode;
 	
         bool IsKernel() => _type == NodeType.kernel;
         bool IsSatellite() => _type == NodeType.satellite;
@@ -73,15 +71,15 @@ namespace StoryEngine.StoryNodes
         bool IsConsumed() => _consumed;
 
 
-        // boolean featuresElement(String id)
-        // {
-        //     boolean features = false;
-        //     if (m_functionalDesc != null)
-        //     {
-        //         features = m_functionalDesc.featuresElement(id);
-        //     }
-        //     return features;
-        // }
+        internal bool FeaturesElement(string id)
+        {
+            bool features = false;
+            // if (_functionalDesc != null) // TODO
+            // {
+            //     features = _functionalDesc.FeaturesElement(id);
+            // }
+            return features;
+        }
         
         // ArrayList<String> getElementIDs()
         // {
@@ -183,17 +181,17 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // float getProminenceValueForElement(String elementID)
-        // {
-        //     float prominence = 0;
+        internal float GetProminenceValueForElement(string elementID)
+        {
+            float prominence = 0;
             
-        //     if (m_functionalDesc != null)
-        //     {
-        //         prominence = m_functionalDesc.getProminenceValueForElement(elementID);
-        //     }
+            // if (_functionalDesc != null) // TODO
+            // {
+            //     prominence = _functionalDesc.GetProminenceValueForElement(elementID);
+            // }
             
-        //     return prominence;
-        // }
+            return prominence;
+        }
         
         
         // ////////////////////////////////////////////////////////////////

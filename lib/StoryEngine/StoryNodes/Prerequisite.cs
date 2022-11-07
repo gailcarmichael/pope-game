@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using StoryEngine.StoryElements;
+
 namespace StoryEngine.StoryNodes
 {
     // Each story node can have zero or one prerequisites. A
@@ -54,7 +56,7 @@ namespace StoryEngine.StoryNodes
 
         //////////////////////////////////////////////////////////////////////////////////////
 
-        bool IsValid(/*StoryElementCollection elements*/)
+        bool IsValid(StoryElementCollection elements)
         {
             bool isValid = true;
 
@@ -66,37 +68,40 @@ namespace StoryEngine.StoryNodes
 
             foreach (QuantifiableElementRequirement req in _quantifiableRequirements)
             {
-                // if (!elements.hasElementWithID(req.getID()))
-                // {
-                //     System.err.println("Prerequisite is not valid because element" +
-                //             " with id " + req.getID() + "  is not part of the element collection.");
-                //     isValid = false;
-                // }
-                // else if (elements.getElementWithID(req.getID()).getType() != ElementType.quantifiable &&
-                //         elements.getElementWithID(req.getID()).getType() != ElementType.quantifiableStoryStateOnly)
-                // {
-                //     System.err.println("Prerequisite is not valid because element" +
-                //             " with id " + req.getID() + "  has type " +
-                //             elements.getElementWithID(req.getID()).getType());
-                //     isValid = false;
-                // }
+                StoryElement? elementWithID = elements.ElementWithID(req.ElementID);
+                if (elementWithID == null)
+                {
+                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                            " with id " + req.ElementID + "  is not part of the element collection.");
+                    isValid = false;
+                }
+                else if (elementWithID.Type != ElementType.quantifiable &&
+                        elementWithID.Type != ElementType.quantifiableStoryStateOnly)
+                {
+                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                            " with id " + req.ElementID + "  has type " +
+                            elementWithID.Type);
+                    isValid = false;
+                }
             }
 
             foreach (TagRequirement req in _tagRequirements)
             {
-                // if (!elements.hasElementWithID(req.getID()))
-                // {
-                //     System.err.println("Prerequisite is not valid because element" +
-                //             " with id " + req.getID() + "  is not part of the element collection.");
-                //     isValid = false;
-                // }
-                // else if (elements.getElementWithID(req.getID()).getType() != ElementType.taggable)
-                // {
-                //     System.err.println("Prerequisite is not valid because element" +
-                //             " with id " + req.getID() + "  has type " +
-                //             elements.getElementWithID(req.getID()).getType());
-                //     isValid = false;
-                // }
+                StoryElement? elementWithID = elements.ElementWithID(req.ElementID);
+
+                if (elementWithID == null)
+                {
+                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                            " with id " + req.ElementID + "  is not part of the element collection.");
+                    isValid = false;
+                }
+                else if (elementWithID.Type != ElementType.taggable)
+                {
+                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                            " with id " + req.ElementID + "  has type " +
+                            elementWithID.Type);
+                    isValid = false;
+                }
             }
 
 
@@ -156,7 +161,7 @@ namespace StoryEngine.StoryNodes
 
         //////////////////////////////////////////////////////////////////////////////////////
 
-        enum BinaryRestriction
+        internal enum BinaryRestriction
         {
             equal,
             lessThan,
@@ -165,13 +170,13 @@ namespace StoryEngine.StoryNodes
             greaterThanOrEqual
         }
 
-        enum ListRestriction
+        internal enum ListRestriction
         {
             contains,
             doesNotContain
         }
 
-        enum SceneRestriction
+        internal enum SceneRestriction
         {
             seen,
             notSeen
@@ -184,15 +189,15 @@ namespace StoryEngine.StoryNodes
         {
             //@Attribute(name= "id")
             private string _elementID;
-            string ElementID => _elementID;
+            internal string ElementID => _elementID;
 
             //@Attribute(name= "operator")
             private BinaryRestriction _operator;
-            BinaryRestriction Operator => _operator;
+            internal BinaryRestriction Operator => _operator;
 
             //@Attribute(name= "compareTo")
             private int _compareTo;
-            int CompareTo => _compareTo;
+            internal int CompareTo => _compareTo;
 
             QuantifiableElementRequirement(
                 string id,
@@ -248,11 +253,11 @@ namespace StoryEngine.StoryNodes
         {
             //@Attribute(name= "id")
             private string _elementID;
-            string ElementID => _elementID;
+            internal string ElementID => _elementID;
 
             //@Attribute(name= "operator")
             private ListRestriction _operator;
-            ListRestriction Operator => _operator;
+            internal ListRestriction Operator => _operator;
 
             TagRequirement(
                 string id,
@@ -262,7 +267,7 @@ namespace StoryEngine.StoryNodes
                 _operator = op;
             }
 
-            bool passes(/*StoryState storyState*/)
+            internal bool passes(/*StoryState storyState*/)
             {
                 return false;/*(_operator == ListRestriction.contains) ?
                             storyState.taggedWithElement(_elementID) :

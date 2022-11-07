@@ -3,7 +3,7 @@ using StoryEngine.StoryNodes;
 
 namespace StoryEngine.StoryFundamentals
 {
-    class Story
+    internal class Story
     {
         // protected StoryElementCollection m_elementCol;
 	
