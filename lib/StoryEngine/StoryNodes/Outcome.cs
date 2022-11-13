@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+
 using StoryEngine.StoryElements;
+using StoryEngine.StoryFundamentals;
 
 namespace StoryEngine.StoryNodes
 {    

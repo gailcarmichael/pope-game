@@ -1,4 +1,7 @@
+using StoryEngine.StoryFundamentals;
+
 using System.Collections.Generic;
+using static System.Math;
 
 namespace StoryEngine.StoryNodes
 {
@@ -213,47 +216,47 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // int getNumChoices()
-        // {
-        //     int numChoices = 0;
+        int NumChoices()
+        {
+            int numChoices = 0;
             
-        //     if (m_choices != null)
-        //     {
-        //         numChoices = m_choices.size();
-        //     }
+            if (_choices != null)
+            {
+                numChoices = _choices.Count;
+            }
             
-        //     return numChoices;
-        // }
+            return numChoices;
+        }
         
         
-        // String getTextForChoice(int index)
-        // {
-        //     String text = null;
+        string? TextForChoice(int index)
+        {
+            string? text = null;
             
-        //     if (m_choices != null && index < m_choices.size())
-        //     {
-        //         text = m_choices.get(index).getText();
-        //     }
+            if (_choices != null && index < _choices.Count)
+            {
+                text = _choices[index].Text;
+            }
             
-        //     return text;
-        // }
+            return text;
+        }
         
         
-        // int getSelectedChoice() { return m_selectedChoiceIndex; }
+        int getSelectedChoice() { return _selectedChoiceIndex; }
         
         
-        // void setSelectedChoice(int choiceIndex)
-        // { 
-        //     m_selectedChoiceIndex = Math.max(0, choiceIndex); 
-        // }
+        void SetSelectedChoice(int choiceIndex)
+        { 
+            _selectedChoiceIndex = System.Math.Max(0, choiceIndex); 
+        }
         
-        // boolean selectedChoiceIsValid()
-        // {
-        //     return
-        //         (m_choices == null && m_selectedChoiceIndex < 0) ||
-        //         (m_choices != null && m_selectedChoiceIndex >= 0
-        //                         && m_selectedChoiceIndex < m_choices.size());
-        // }
+        bool SelectedChoiceIsValid()
+        {
+            return
+                (_choices == null && _selectedChoiceIndex < 0) ||
+                (_choices != null && _selectedChoiceIndex >= 0
+                                && _selectedChoiceIndex < _choices.Count);
+        }
         
         
         // ////////////////////////////////////////////////////////////////

@@ -11,7 +11,8 @@ namespace StoryEngine.StoryFundamentals
         protected int _numTopScenesForUser;
         
         // @Attribute(name="prioritizationType", required=false)
-        // protected PrioritizationType m_prioritizationType;
+        protected PrioritizationType _prioritizationType;
+        internal PrioritizationType PrioritizationType => _prioritizationType;
         
         // @ElementList(name="storyNodes")
         protected List<StoryNode> _nodes;
