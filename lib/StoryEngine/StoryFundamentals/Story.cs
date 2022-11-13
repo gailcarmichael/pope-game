@@ -3,7 +3,7 @@ using StoryEngine.StoryNodes;
 
 namespace StoryEngine.StoryFundamentals
 {
-    class Story
+    internal class Story
     {
         // protected StoryElementCollection m_elementCol;
 	
@@ -11,7 +11,8 @@ namespace StoryEngine.StoryFundamentals
         protected int _numTopScenesForUser;
         
         // @Attribute(name="prioritizationType", required=false)
-        // protected PrioritizationType m_prioritizationType;
+        protected PrioritizationType _prioritizationType;
+        internal PrioritizationType PrioritizationType => _prioritizationType;
         
         // @ElementList(name="storyNodes")
         protected List<StoryNode> _nodes;
@@ -23,13 +24,13 @@ namespace StoryEngine.StoryFundamentals
         protected StoryNode _startingNode;	
         
         // @Element(name="initialStoryState")
-        // protected StoryState m_storyState;
+        protected StoryState _storyState;
         
         // @ElementList(name="globalRules", required=false)
         // protected List<GlobalRule> m_globalRules;
         
         // // Keep a reference to the original
-        // protected StoryState m_initialStoryState;
+        protected StoryState _initialStoryState;
         
         // // Stuff used for managing story progression
         // protected NodePrioritizer m_nodePrioritizer;
@@ -41,12 +42,12 @@ namespace StoryEngine.StoryFundamentals
         // protected float _totalAllProminences;
 
 
-        Story(
+        internal Story(
             int numTopScenesForUser,
             //PrioritizationType prioritizationType,
             List<StoryNode> nodes,
-            StoryNode startingNode
-            //StoryState initStoryState,
+            StoryNode startingNode,
+            StoryState initStoryState
             //List<GlobalRule> globalRules = null
         )
         {
@@ -64,13 +65,13 @@ namespace StoryEngine.StoryFundamentals
             
             _startingNode = startingNode;
             
-            // m_initialStoryState = initStoryState.clone();
-            // m_storyState = m_initialStoryState.clone();
-            
+            _initialStoryState = initStoryState; // TODO: look into how best to clone these
+            _storyState = _initialStoryState; // TODO: look into how best to clone these
+
             // m_globalRules = globalRules;  // could be null
-            
+
             // m_nodePrioritizer = new NodePrioritizer(this);
-            
+
             _nodeBeingConsumed = _startingNode; // could be null
             
             // calculateNumNodesWithElement();

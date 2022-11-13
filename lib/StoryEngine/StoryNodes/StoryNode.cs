@@ -1,4 +1,7 @@
+using StoryEngine.StoryFundamentals;
+
 using System.Collections.Generic;
+using static System.Math;
 
 namespace StoryEngine.StoryNodes
 {
@@ -6,13 +9,14 @@ namespace StoryEngine.StoryNodes
     {
         // @Attribute(name="id")
         protected string _id;
-        string ID => _id;
+        internal string ID => _id;
         
         // @Attribute(name="type")
         protected NodeType _type;
         
         // @Attribute(name="lastNode", required=false)
-        protected bool _lastNode;
+        protected bool _isLastNode;
+        bool IsLastNode => _isLastNode;
 
         // @Element(name="teaserText")
         protected string _teaserText;
@@ -30,7 +34,7 @@ namespace StoryEngine.StoryNodes
         // protected FunctionalDescription m_functionalDesc;
 
         // @Element(name="prerequisite", required=false)
-        // protected Prerequisite m_prerequisite;
+        protected Prerequisite _prerequisite;
 
         // @ElementList(name="choices", inline=true, required=false)
         protected List<Choice> _choices;
@@ -39,7 +43,7 @@ namespace StoryEngine.StoryNodes
         protected int _selectedChoiceIndex;
 
 
-        StoryNode (
+        internal StoryNode (
             string id,  
 			NodeType type,
 			bool lastNode,
@@ -47,25 +51,22 @@ namespace StoryEngine.StoryNodes
 			string teaserImage, 
 			string eventText,
 			//FunctionalDescription funcDesc,
-			//Prerequisite prerequisite,
+			Prerequisite prerequisite,
 			List<Choice> choices
         )
         {
             _id = id;
             _type = type;
-            _lastNode = false;
+            _isLastNode = false;
             _teaserText = teaserText;
             _teaserImage = teaserImage;
             _eventText = eventText;
             //_functionalDesc = funcDesc;
-            //_prerequisite = prerequisite;
+            _prerequisite = prerequisite;
             _choices = choices;
             
             resetNode();
         }
-
-
-        bool IsLastNode() => _lastNode;
 	
         bool IsKernel() => _type == NodeType.kernel;
         bool IsSatellite() => _type == NodeType.satellite;
@@ -73,15 +74,15 @@ namespace StoryEngine.StoryNodes
         bool IsConsumed() => _consumed;
 
 
-        // boolean featuresElement(String id)
-        // {
-        //     boolean features = false;
-        //     if (m_functionalDesc != null)
-        //     {
-        //         features = m_functionalDesc.featuresElement(id);
-        //     }
-        //     return features;
-        // }
+        internal bool FeaturesElement(string id)
+        {
+            bool features = false;
+            // if (_functionalDesc != null) // TODO
+            // {
+            //     features = _functionalDesc.FeaturesElement(id);
+            // }
+            return features;
+        }
         
         // ArrayList<String> getElementIDs()
         // {
@@ -105,17 +106,17 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // boolean passesPrerequisite(StoryState storyState)
-        // {
-        //     if (m_prerequisite == null)
-        //     {
-        //         return true;
-        //     }
-        //     else
-        //     {
-        //         return m_prerequisite.passes(storyState);
-        //     }
-        // }
+        bool PassesPrerequisite(StoryState storyState)
+        {
+            if (_prerequisite == null)
+            {
+                return true;
+            }
+            else
+            {
+                return _prerequisite.Passes(storyState);
+            }
+        }
         
         
         // ////////////////////////////////////////////////////////////////
@@ -183,17 +184,17 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // float getProminenceValueForElement(String elementID)
-        // {
-        //     float prominence = 0;
+        internal float GetProminenceValueForElement(string elementID)
+        {
+            float prominence = 0;
             
-        //     if (m_functionalDesc != null)
-        //     {
-        //         prominence = m_functionalDesc.getProminenceValueForElement(elementID);
-        //     }
+            // if (_functionalDesc != null) // TODO
+            // {
+            //     prominence = _functionalDesc.GetProminenceValueForElement(elementID);
+            // }
             
-        //     return prominence;
-        // }
+            return prominence;
+        }
         
         
         // ////////////////////////////////////////////////////////////////
@@ -215,47 +216,47 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // int getNumChoices()
-        // {
-        //     int numChoices = 0;
+        int NumChoices()
+        {
+            int numChoices = 0;
             
-        //     if (m_choices != null)
-        //     {
-        //         numChoices = m_choices.size();
-        //     }
+            if (_choices != null)
+            {
+                numChoices = _choices.Count;
+            }
             
-        //     return numChoices;
-        // }
+            return numChoices;
+        }
         
         
-        // String getTextForChoice(int index)
-        // {
-        //     String text = null;
+        string? TextForChoice(int index)
+        {
+            string? text = null;
             
-        //     if (m_choices != null && index < m_choices.size())
-        //     {
-        //         text = m_choices.get(index).getText();
-        //     }
+            if (_choices != null && index < _choices.Count)
+            {
+                text = _choices[index].Text;
+            }
             
-        //     return text;
-        // }
+            return text;
+        }
         
         
-        // int getSelectedChoice() { return m_selectedChoiceIndex; }
+        int getSelectedChoice() { return _selectedChoiceIndex; }
         
         
-        // void setSelectedChoice(int choiceIndex)
-        // { 
-        //     m_selectedChoiceIndex = Math.max(0, choiceIndex); 
-        // }
+        void SetSelectedChoice(int choiceIndex)
+        { 
+            _selectedChoiceIndex = System.Math.Max(0, choiceIndex); 
+        }
         
-        // boolean selectedChoiceIsValid()
-        // {
-        //     return
-        //         (m_choices == null && m_selectedChoiceIndex < 0) ||
-        //         (m_choices != null && m_selectedChoiceIndex >= 0
-        //                         && m_selectedChoiceIndex < m_choices.size());
-        // }
+        bool SelectedChoiceIsValid()
+        {
+            return
+                (_choices == null && _selectedChoiceIndex < 0) ||
+                (_choices != null && _selectedChoiceIndex >= 0
+                                && _selectedChoiceIndex < _choices.Count);
+        }
         
         
         // ////////////////////////////////////////////////////////////////

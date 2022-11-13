@@ -6,7 +6,7 @@ namespace StoryEngine.StoryNodes
     {
         // @Element(name="text", required=false)
         protected string? _text;
-        string? Text => _text;
+        internal string? Text => _text;
         
         // @Element(name="outcome")
         protected Outcome? _outcome;

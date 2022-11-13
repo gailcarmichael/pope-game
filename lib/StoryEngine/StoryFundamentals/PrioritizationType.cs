@@ -1,6 +1,6 @@
 namespace StoryEngine.StoryFundamentals
 {
-    enum PrioritizationType
+    internal enum PrioritizationType
     {
         strawManRandom,
 	    sumOfCategoryMaximums,
