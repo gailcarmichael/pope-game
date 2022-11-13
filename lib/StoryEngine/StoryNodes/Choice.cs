@@ -10,12 +10,12 @@ namespace StoryEngine.StoryNodes
         
         // @Element(name="outcome")
         protected Outcome? _outcome;
-        Outcome? Outcome {
+        internal Outcome? Outcome {
             get => _outcome;
             set => _outcome = value; }
         
               
-        Choice(
+        internal Choice(
             string? text = null,
             Outcome? outcome = null)
         {
@@ -27,7 +27,7 @@ namespace StoryEngine.StoryNodes
         // //////////////////////////////////////////////////////////////////////////////////////
         
         
-        bool IsValid(StoryElementCollection elements)
+        internal bool IsValid(StoryElementCollection elements)
         {
             bool isValid = true;
             

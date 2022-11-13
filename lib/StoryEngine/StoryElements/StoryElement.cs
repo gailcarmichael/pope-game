@@ -34,7 +34,7 @@ namespace StoryEngine.StoryElements
         internal ElementType Type => _type;
         
         
-        StoryElement(
+        internal StoryElement(
             string id, 
             string category, 
             string name,

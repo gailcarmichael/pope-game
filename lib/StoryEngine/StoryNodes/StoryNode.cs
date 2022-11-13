@@ -1,7 +1,8 @@
 using StoryEngine.StoryFundamentals;
+using StoryEngine.StoryElements;
 
 using System.Collections.Generic;
-using static System.Math;
+using System.Linq;
 
 namespace StoryEngine.StoryNodes
 {
@@ -16,28 +17,28 @@ namespace StoryEngine.StoryNodes
         
         // @Attribute(name="lastNode", required=false)
         protected bool _isLastNode;
-        bool IsLastNode => _isLastNode;
+        internal bool IsLastNode => _isLastNode;
 
         // @Element(name="teaserText")
         protected string _teaserText;
-        string TeaserText => _teaserText;
+        internal string TeaserText => _teaserText;
         
         // @Element(name="teaserImage", required=false)
-        protected string _teaserImage;
-        string TeaserImage => _teaserImage;
+        // protected string _teaserImage;
+        // string TeaserImage => _teaserImage;
 
         // @Element(name="eventText")
         protected string _eventText;
-        string EventText => _eventText;
+        internal string EventText => _eventText;
 
         // @Element(name="functionalDescription", required=false)
-        // protected FunctionalDescription m_functionalDesc;
+        protected FunctionalDescription? _functionalDesc;
 
         // @Element(name="prerequisite", required=false)
-        protected Prerequisite _prerequisite;
+        protected Prerequisite? _prerequisite;
 
         // @ElementList(name="choices", inline=true, required=false)
-        protected List<Choice> _choices;
+        protected List<Choice>? _choices; // TODO this might have to be required
         
         protected bool _consumed;
         protected int _selectedChoiceIndex;
@@ -46,67 +47,67 @@ namespace StoryEngine.StoryNodes
         internal StoryNode (
             string id,  
 			NodeType type,
-			bool lastNode,
 			string teaserText, 
-			string teaserImage, 
+			//string teaserImage, 
 			string eventText,
-			//FunctionalDescription funcDesc,
-			Prerequisite prerequisite,
-			List<Choice> choices
+            FunctionalDescription? funcDesc = null,
+			Prerequisite? prerequisite = null,
+			List<Choice>? choices = null,
+            bool lastNode = false
         )
         {
             _id = id;
             _type = type;
-            _isLastNode = false;
+            _isLastNode = lastNode;
             _teaserText = teaserText;
-            _teaserImage = teaserImage;
+            //_teaserImage = teaserImage;
             _eventText = eventText;
-            //_functionalDesc = funcDesc;
+            _functionalDesc = funcDesc;
             _prerequisite = prerequisite;
             _choices = choices;
             
-            resetNode();
+            ResetNode();
         }
 	
-        bool IsKernel() => _type == NodeType.kernel;
-        bool IsSatellite() => _type == NodeType.satellite;
+        internal bool IsKernel() => _type == NodeType.kernel;
+        internal bool IsSatellite() => _type == NodeType.satellite;
         
-        bool IsConsumed() => _consumed;
+        internal bool IsConsumed() => _consumed;
 
 
         internal bool FeaturesElement(string id)
         {
             bool features = false;
-            // if (_functionalDesc != null) // TODO
-            // {
-            //     features = _functionalDesc.FeaturesElement(id);
-            // }
+            if (_functionalDesc != null)
+            {
+                features = _functionalDesc.FeaturesElement(id);
+            }
             return features;
         }
         
-        // ArrayList<String> getElementIDs()
-        // {
-        //     ArrayList<String> elementIDs = new ArrayList<String>();
+        List<string> ElementIDs()
+        {
+            List<string> elementIDs = new List<string>();
             
-        //     if (m_functionalDesc != null)
-        //     {
-        //         elementIDs.addAll(m_functionalDesc.getElementIDs());
-        //     }
+            if (_functionalDesc != null)
+            {
+                elementIDs.AddRange(_functionalDesc.ElementIDs);
+            }
             
-        //     return elementIDs;
-        // }
+            return elementIDs;
+        }
         
         
-        // String toString()
-        // {
-        //     return m_id + ": " + m_teaserText;
-        // }
+        public override string ToString()
+        {
+            return _id + ": " + _teaserText;
+        }
         
         
         // ////////////////////////////////////////////////////////////////
         
         
-        bool PassesPrerequisite(StoryState storyState)
+        internal bool PassesPrerequisite(StoryState storyState)
         {
             if (_prerequisite == null)
             {
@@ -147,38 +148,38 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // boolean isValid(StoryElementCollection elements)
-        // {
-        //     boolean isValid = true;
+        internal bool IsValid(StoryElementCollection elements)
+        {
+            bool isValid = true;
             
-        //     // A node is valid if its functional description, prerequisite, and
-        //     // choices are all individually valid.
+            // A node is valid if its functional description, prerequisite, and
+            // choices are all individually valid.
             
-        //     if (m_functionalDesc != null && 
-        //         !m_functionalDesc.isValid(elements))
-        //     {
-        //         isValid = false;
-        //     }
+            if (_functionalDesc != null && 
+                !_functionalDesc.IsValid(elements))
+            {
+                isValid = false;
+            }
             
-        //     if (m_prerequisite != null &&
-        //         !m_prerequisite.isValid(elements))
-        //     {
-        //         isValid = false;
-        //     }
+            if (_prerequisite != null &&
+                !_prerequisite.IsValid(elements))
+            {
+                isValid = false;
+            }
             
-        //     if (m_choices != null)
-        //     {
-        //         for (Choice c : m_choices)
-        //         {
-        //             if (!c.isValid(elements))
-        //             {
-        //                 isValid = false;
-        //             }
-        //         }
-        //     }
+            if (_choices != null)
+            {
+                foreach (Choice c in _choices)
+                {
+                    if (!c.IsValid(elements))
+                    {
+                        isValid = false;
+                    }
+                }
+            }
             
-        //     return isValid;
-        // }
+            return isValid;
+        }
         
         
         // ////////////////////////////////////////////////////////////////
@@ -216,7 +217,7 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        int NumChoices()
+        internal int NumChoices()
         {
             int numChoices = 0;
             
@@ -229,7 +230,7 @@ namespace StoryEngine.StoryNodes
         }
         
         
-        string? TextForChoice(int index)
+        internal string? TextForChoice(int index)
         {
             string? text = null;
             
@@ -240,17 +241,29 @@ namespace StoryEngine.StoryNodes
             
             return text;
         }
+
+        internal List<string> TextsForAllChoices()
+        {
+            List<string> texts = new List<string>();
+
+            foreach (Choice c in _choices?? Enumerable.Empty<Choice>())
+            {
+                texts.Add(c.Text ?? "");
+            }
+
+            return texts;
+        }
         
         
-        int getSelectedChoice() { return _selectedChoiceIndex; }
+        internal int getSelectedChoice() { return _selectedChoiceIndex; }
         
         
-        void SetSelectedChoice(int choiceIndex)
+        internal void SetSelectedChoice(int choiceIndex)
         { 
             _selectedChoiceIndex = System.Math.Max(0, choiceIndex); 
         }
         
-        bool SelectedChoiceIsValid()
+        internal bool SelectedChoiceIsValid()
         {
             return
                 (_choices == null && _selectedChoiceIndex < 0) ||
@@ -262,50 +275,52 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // String getOutcomeTextForSelectedChoice()
-        // {
-        //     String text = null;
+        internal string? OutcomeTextForSelectedChoice()
+        {
+            string? text = null;
             
-        //     if (m_choices != null && selectedChoiceIsValid())
-        //     {
-        //         text = m_choices.get(getSelectedChoice()).getOutcome().getOutcomeText();
-        //     }
+            if (_choices != null && SelectedChoiceIsValid())
+            {
+                Outcome? o =_choices[getSelectedChoice()].Outcome;
+                if (o != null) text = o.OutcomeText;
+            }
             
-        //     return text;
-        // }
+            return text;
+        }
         
         
-        // void applyOutcomeForSelectedChoice(StoryState state, StoryElementCollection c)
-        // {
-        //     // Node-specific changes
-        //     m_consumed = true;
-        //     state.addNodeToScenesSeen(this);
+        internal void ApplyOutcomeForSelectedChoice(StoryState state, StoryElementCollection c)
+        {
+            // Node-specific changes
+            _consumed = true;
+            state.AddNodeToScenesSeen(this);
             
-        //     // Apply the outcome for the selected choice
-        //     if (m_choices != null && selectedChoiceIsValid())
-        //     {
-        //         Outcome outcome = m_choices.get(getSelectedChoice()).getOutcome();
-        //         if (outcome != null)
-        //         {
-        //             outcome.applyOutcome(state, c);
-        //         }
-        //     }
-        // }
+            // Apply the outcome for the selected choice
+            if (_choices != null && SelectedChoiceIsValid())
+            {
+                Choice? choice = _choices[getSelectedChoice()];
+                if (choice != null)
+                {
+                    Outcome? outcome = choice.Outcome;
+                    if (outcome != null) outcome.ApplyOutcome(state, c);
+                }
+            }
+        }
         
-        // void resetRelevantDesireValuesInStoryState(StoryState state)
-        // {
-        //     // Reset desire values in state that appear in the functional description
-        //     if (m_functionalDesc != null)
-        //     {
-        //         m_functionalDesc.resetDesireValues(state);
-        //     }
-        // }
+        void ResetRelevantDesireValuesInStoryState(StoryState state)
+        {
+            // Reset desire values in state that appear in the functional description
+            if (_functionalDesc != null)
+            {
+                //_functionalDesc.resetDesireValues(state); // TODO
+            }
+        }
 
 
         ////////////////////////////////////////////////////////////////
 	
 
-        void resetNode()
+        internal void ResetNode()
         {
             _consumed = false;
             _selectedChoiceIndex = -1;

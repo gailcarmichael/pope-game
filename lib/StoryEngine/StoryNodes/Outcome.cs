@@ -12,7 +12,7 @@ namespace StoryEngine.StoryNodes
     {
         // @Element(name="text", required=false)
         protected string? _outcomeText;
-        string? OutcomeText { get; }
+        internal string? OutcomeText { get; }
 
         // @ElementList(inline=true, required=false)
         protected List<QuantifiableModifier> _quantifiableModifiers;
@@ -21,7 +21,7 @@ namespace StoryEngine.StoryNodes
         protected List<TagModifier> _taggableModifiers;
 
 
-        Outcome(
+        internal Outcome(
             string outcomeText,
             List<QuantifiableModifier>? quantModifiers = null,
             List<TagModifier>? taggableModifiers = null
@@ -47,7 +47,7 @@ namespace StoryEngine.StoryNodes
         //////////////////////////////////////////////////////////////////////////////////////
 
 
-        void Add(QuantifiableModifier? m)
+        internal void Add(QuantifiableModifier? m)
         {
             if (m != null)
             {
@@ -55,7 +55,7 @@ namespace StoryEngine.StoryNodes
             }
         }
 
-        void Add(TagModifier? m)
+        internal void Add(TagModifier? m)
         {
             if (m != null)
             {
@@ -124,7 +124,7 @@ namespace StoryEngine.StoryNodes
         //////////////////////////////////////////////////////////////////////////////////////
         
         
-        void ApplyOutcome(StoryState state, StoryElementCollection c)
+        internal void ApplyOutcome(StoryState state, StoryElementCollection c)
         {
             if (!IsValid(c)) return;
             
@@ -178,7 +178,7 @@ namespace StoryEngine.StoryNodes
             protected int _delta;
             internal int Delta => _delta;
 
-            QuantifiableModifier(string id, bool absolute, int delta)
+            internal QuantifiableModifier(string id, bool absolute, int delta)
             {
                 _elementID = id;
                 _absolute = absolute;
@@ -212,7 +212,7 @@ namespace StoryEngine.StoryNodes
             internal TagAction Action => _action;
 
 
-            TagModifier(string id, TagAction action)
+            internal TagModifier(string id, TagAction action)
             {
                 _elementID = id;
                 _action = action;

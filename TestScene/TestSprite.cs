@@ -10,8 +10,21 @@ public class TestSprite : Sprite
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GD.Print("Hello, world!");
-        GD.Print(new StoryEngineAPI("filename", "otherFilename"));
+        StoryEngineAPI storyEngine = new StoryEngineAPI("filename", "otherFilename");
+
+        // TODO: Directly accessing Story should not be allowed in the future; for now,
+        // it's just for testing until we find a better way to control access and print
+        // values generically from the library
+
+        GD.Print("Story is valid: " + storyEngine.Story.IsValid());
+        
+        GD.Print("\n\n");
+        GD.Print(storyEngine.Story.ToString());
+
+        GD.Print("\n\n");
+        GD.Print(storyEngine.CurrentNodeTeaserText());
+        GD.Print(storyEngine.CurrentNodeEventText());
+        GD.Print(storyEngine.CurrentNodeChoiceText(0));
     }
 
     public override void _Process(float delta)

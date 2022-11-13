@@ -14,8 +14,8 @@ namespace StoryEngine.StoryElements
         protected List<StoryElement> _storyElementsPriorityCalc;
         
         
-        StoryElementCollection(
-            List<StoryElement> storyElements)
+        internal StoryElementCollection(
+            List<StoryElement>? storyElements = null)
         {
             _storyElements = new List<StoryElement>();
             _storyElementsPriorityCalc = new List<StoryElement>();
@@ -104,7 +104,7 @@ namespace StoryEngine.StoryElements
         }
         
         
-        bool Add(StoryElement e)
+        internal bool Add(StoryElement e)
         {
             bool success = false;
             

@@ -23,11 +23,11 @@ namespace StoryEngine.StoryNodes
         protected List<SceneRequirement> _sceneRequirements;
 
 
-        Prerequisite(
-            string id,
-            List<QuantifiableElementRequirement> qRequirements,
-            List<TagRequirement> tagRequirements,
-            List<SceneRequirement> sceneRequirements)
+        internal Prerequisite(
+            List<QuantifiableElementRequirement>? qRequirements = null,
+            List<TagRequirement>? tagRequirements = null,
+            List<SceneRequirement>? sceneRequirements = null,
+            string id = "")
         {
             _quantifiableRequirements = new List<QuantifiableElementRequirement>();
             _tagRequirements = new List<TagRequirement>();
@@ -40,24 +40,24 @@ namespace StoryEngine.StoryNodes
         }
 
 
-        void Add(QuantifiableElementRequirement r)
+        internal void Add(QuantifiableElementRequirement r)
         {
             _quantifiableRequirements.Add(r);
         }
 
-        void Add(TagRequirement r)
+        internal void Add(TagRequirement r)
         {
             _tagRequirements.Add(r);
         }
 
-        void Add(SceneRequirement r)
+        internal void Add(SceneRequirement r)
         {
             _sceneRequirements.Add(r);
         }
 
         //////////////////////////////////////////////////////////////////////////////////////
 
-        bool IsValid(StoryElementCollection elements)
+        internal bool IsValid(StoryElementCollection elements)
         {
             bool isValid = true;
 
@@ -200,7 +200,7 @@ namespace StoryEngine.StoryNodes
             private int _compareTo;
             internal int CompareTo => _compareTo;
 
-            QuantifiableElementRequirement(
+            internal QuantifiableElementRequirement(
                 string id,
                 BinaryRestriction op,
                 int compareTo)
@@ -260,7 +260,7 @@ namespace StoryEngine.StoryNodes
             private ListRestriction _operator;
             internal ListRestriction Operator => _operator;
 
-            TagRequirement(
+            internal TagRequirement(
                 string id,
                 ListRestriction op)
             {
@@ -289,7 +289,7 @@ namespace StoryEngine.StoryNodes
             private SceneRestriction _operator;
             SceneRestriction Operator => _operator;
 
-            SceneRequirement(string sceneID, SceneRestriction op)
+            internal SceneRequirement(string sceneID, SceneRestriction op)
             {
                 _sceneID = sceneID;
                 _operator = op;
