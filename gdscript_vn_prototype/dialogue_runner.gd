@@ -1,4 +1,6 @@
 extends Control
+var storyengine = load("res://lib/StoryEngine/StoryEngine.cs")
+var storynode = storyengine.new("filename", "otherFilename")
 
 onready var text = get_parent().get_node("Node").dialogue_1
 
