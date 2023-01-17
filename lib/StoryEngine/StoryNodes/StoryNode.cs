@@ -255,7 +255,7 @@ namespace StoryEngine.StoryNodes
         }
         
         
-        internal int getSelectedChoice() { return _selectedChoiceIndex; }
+        internal int SelectedChoice() { return _selectedChoiceIndex; }
         
         
         internal void SetSelectedChoice(int choiceIndex)
@@ -281,7 +281,7 @@ namespace StoryEngine.StoryNodes
             
             if (_choices != null && SelectedChoiceIsValid())
             {
-                Outcome? o =_choices[getSelectedChoice()].Outcome;
+                Outcome? o =_choices[SelectedChoice()].Outcome;
                 if (o != null) text = o.OutcomeText;
             }
             
@@ -298,7 +298,7 @@ namespace StoryEngine.StoryNodes
             // Apply the outcome for the selected choice
             if (_choices != null && SelectedChoiceIsValid())
             {
-                Choice? choice = _choices[getSelectedChoice()];
+                Choice? choice = _choices[SelectedChoice()];
                 if (choice != null)
                 {
                     Outcome? outcome = choice.Outcome;

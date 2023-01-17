@@ -17,6 +17,7 @@ namespace StoryEngine.StoryFundamentals
 	
         // @Attribute(name="numTopScenesForUser")
         protected int _numTopScenesForUser;
+        internal int NumTopScenesForUser => _numTopScenesForUser;
         
         // @Attribute(name="prioritizationType", required=false)
         protected PrioritizationType _prioritizationType;

@@ -12,15 +12,79 @@ namespace StoryEngine
         private Story _story;
         internal Story Story => _story;
 
+        private List<StoryNode> _currentSatellites;
+
+        private bool _showingOutcomeText;
+
         public StoryEngineAPI(string storyFilename, string elementCollectionFilename)
         {
             // TODO: use the story and element collection filenames to load story info from those files
             // (in the meantime, we will have some test stories set up in this file)
 
             _story = GetTestStory1();
+
+            _currentSatellites = new List<StoryNode>();
+            RefreshCurrentSatellites();
         }
 
-        public bool IsStoryValid() => Story.IsValid();
+        public bool IsStoryValid() => Story.IsValid();///////////////////////
+
+        private void RefreshCurrentSatellites()
+        {
+            _currentSatellites = _story.CurrentSceneOptions(true); // don't include top kernel
+        }
+
+        public int GetNumSatellitesToShow()
+        {
+            return _story.NumTopScenesForUser;
+        }
+
+        public List<string> SatellitesTeaserText()
+        {
+            List<string> textList = new List<string>();
+
+            foreach (StoryNode s in _currentSatellites)
+            {
+                textList.Add(s.TeaserText);
+            }
+
+            return textList;
+        }
+
+        public List<string> GetSatellitesTeaserImages()
+        {
+            List<string> imageList = new List<string>();
+
+            foreach (StoryNode s in _currentSatellites)
+            {
+                // TODO (if relevant in the end)
+
+                // if (s.getTeaserImage() == null)
+                // {
+                //     imageList.add("");
+
+                // }
+                // else
+                // {
+                //     imageList.add(s.getTeaserImage());
+                // }
+
+            }
+
+            return imageList;
+        }
+
+        public void ConsumeSatellite(int index)
+        {
+            if (index < 0 || index >= _currentSatellites.Count)
+            {
+                System.Console.WriteLine("Game failed to consume satellite because " + index + " is not a valid index");
+            }
+            else
+            {
+                _story.StartConsumingNode(_currentSatellites[index]);
+            }
+        }
 
         /////////////////////////////
 
@@ -41,6 +105,8 @@ namespace StoryEngine
             return node != null ? node.EventText : "";
         }
 
+        /////////////////////////////
+
         public int CurrentNodeNumChoices()
         {
             StoryNode? node = _story.NodeBeingConsumed();
@@ -59,6 +125,70 @@ namespace StoryEngine
             string? text = node != null ? node.TextForChoice(choiceIndex) : "";
             return text ?? "";
         }
+
+        public void ApplyChoice(int index)
+        {
+            if (IsDisplayingScene())
+            {
+                StoryNode? node = _story.NodeBeingConsumed();
+                if (node != null) node.SetSelectedChoice(index);
+            }
+        }
+
+        public void MoveSceneForward()
+        {
+            if (!CurrentlyShowingOutcome() && CurrentNodeHasOutcomeToShow())
+            {
+                SetShowingOutcome(true);
+            }
+            else if (CurrentlyShowingOutcome())
+            {
+                FinishConsumingScene();
+            }
+            else
+            {
+                ApplyChoice(0);
+                SetShowingOutcome(CurrentNodeHasOutcomeToShow());
+                if (!CurrentlyShowingOutcome()) FinishConsumingScene();
+            }
+        }
+
+        ///////////////////////
+
+        public bool CurrentlyShowingOutcome() { return _showingOutcomeText; }
+        private void SetShowingOutcome(bool showingOutcome) { _showingOutcomeText = showingOutcome; }
+
+        public bool CurrentNodeHasOutcomeToShow()
+        {
+            StoryNode? node = _story.NodeBeingConsumed();
+            if (node == null)
+            {
+                return false;
+            }
+            else
+            {
+                string? outcomeText = node.OutcomeTextForSelectedChoice();
+                return (CurrentNodeNumChoices() > 1) &&
+                        (outcomeText != null) &&
+                        (!string.IsNullOrEmpty(outcomeText));
+            }
+        }
+
+        ///////////////////////
+
+        public void FinishConsumingScene()
+        {
+            _showingOutcomeText = false;
+
+            if (_story.NodeBeingConsumed() == null) return;
+
+            _story.ApplyOutcomeAndAdjustQuantifiableValues();
+            _story.FinishConsumingNode();
+
+            RefreshCurrentSatellites();
+        }
+
+        ///////////////////////
 
 
         /////////////////////////////////////////////////////////////////////////////
