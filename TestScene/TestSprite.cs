@@ -16,10 +16,10 @@ public class TestSprite : Sprite
         // it's just for testing until we find a better way to control access and print
         // values generically from the library
 
-        GD.Print("Story is valid: " + storyEngine.Story.IsValid());
+        GD.Print("Story is valid: " + storyEngine.IsStoryValid());
         
         GD.Print("\n\n");
-        GD.Print(storyEngine.Story.ToString());
+        GD.Print(storyEngine.Story.ToString()); // TODO implement custom ToString
 
         GD.Print("\n\n");
         GD.Print(storyEngine.CurrentNodeTeaserText());

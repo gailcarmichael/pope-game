@@ -20,6 +20,15 @@ namespace StoryEngine
             _story = GetTestStory1();
         }
 
+        public bool IsStoryValid() => Story.IsValid();
+
+        /////////////////////////////
+
+        public bool IsDisplayingScene()
+        {
+            return _story.NodeBeingConsumed() != null;
+        }
+        
         public string CurrentNodeTeaserText()
         {
             StoryNode? node = _story.NodeBeingConsumed();
@@ -50,6 +59,7 @@ namespace StoryEngine
             string? text = node != null ? node.TextForChoice(choiceIndex) : "";
             return text ?? "";
         }
+
 
         /////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////

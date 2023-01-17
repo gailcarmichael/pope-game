@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using StoryEngine.StoryNodes;
 using StoryEngine.StoryElements;
@@ -93,9 +94,6 @@ namespace StoryEngine.StoryFundamentals
 
         internal bool IsValid()
         {
-            // Check for validity in everything without stopping to ensure
-            // all information is printed out
-
             if (_elementCol == null)
             {
                 return false;     
@@ -243,9 +241,12 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                // TODO:
+                // TODO: replace temp with something like this
                 // _nodePrioritizer.recalculateTopNodes(satellitesOnly);
                 // currentSceneOptions.AddRange(_nodePrioritizer.getTopNodes());
+
+                //TODO: Remove this temporary code
+                _nodes.Take(_numTopScenesForUser);
             }
 
             return currentSceneOptions;
