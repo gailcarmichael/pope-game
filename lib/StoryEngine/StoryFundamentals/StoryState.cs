@@ -11,7 +11,7 @@ using System.Linq;
 // Other values like tension can also be tracked.
 
 // Currently, it is assumed that only an initial story
-// state is ever stored in XML; some changes would be
+// state is ever stored in a file; some changes would be
 // required if the current state of a story needed to
 // be saved to disk (e.g. to save progress).
 

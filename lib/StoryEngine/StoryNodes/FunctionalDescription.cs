@@ -13,6 +13,7 @@ namespace StoryEngine.StoryNodes
 
         //@ElementList(required = false, inline = true) - note, changed to be strings instead of Tags
         protected List<string> _elementIDs;
+        internal List<string>  ElementIDs => _elementIDs;
 
 
         internal FunctionalDescription()
