@@ -9,11 +9,7 @@ namespace StoryEngine.StoryFundamentals
     internal class Story
     {
         protected StoryElementCollection _elementCol;
-        internal StoryElementCollection ElementCollection
-        {
-            get { return _elementCol; }
-            //set { _elementCol = value; }
-        }
+        internal StoryElementCollection ElementCollection => _elementCol;
 	
         // @Attribute(name="numTopScenesForUser")
         protected int _numTopScenesForUser;
@@ -36,19 +32,19 @@ namespace StoryEngine.StoryFundamentals
         protected StoryState _storyState;
         
         // @ElementList(name="globalRules", required=false)
-        // protected List<GlobalRule> m_globalRules;
+        protected List<GlobalRule>? _globalRules;
         
         // // Keep a reference to the original
         protected StoryState _initialStoryState;
         
         // // Stuff used for managing story progression
-        // protected NodePrioritizer m_nodePrioritizer;
+        // protected NodePrioritizer _nodePrioritizer; //TODO
         protected StoryNode? _nodeBeingConsumed;
         
-        // // Information that will be looked up often
-        // protected Dictionary<string, int> _numNodesWithElement;
-        // protected Dictionary<string, float> _sumProminencesForNodesWithElement;
-        // protected float _totalAllProminences;
+        // Information that will be looked up often
+        protected Dictionary<string, int> _numNodesWithElement;
+        protected Dictionary<string, float> _sumProminencesForNodesWithElement;
+        protected float _totalAllProminences;
 
 
         internal Story(
@@ -57,8 +53,8 @@ namespace StoryEngine.StoryFundamentals
             List<StoryNode> nodes,
             StoryNode startingNode,
             StoryState initStoryState,
-            PrioritizationType prioritizationType = PrioritizationType.sumOfCategoryMaximums
-            //List<GlobalRule> globalRules = null
+            PrioritizationType prioritizationType = PrioritizationType.sumOfCategoryMaximums,
+            List<GlobalRule>? globalRules = null
         )
         {
             _elementCol = elements;
@@ -77,7 +73,7 @@ namespace StoryEngine.StoryFundamentals
             _initialStoryState = initStoryState; // TODO: look into how best to clone these
             _storyState = _initialStoryState; // TODO: look into how best to clone these
 
-            // m_globalRules = globalRules;  // could be null
+            _globalRules = globalRules;  // could be null
 
             // m_nodePrioritizer = new NodePrioritizer(this);
 
@@ -85,8 +81,89 @@ namespace StoryEngine.StoryFundamentals
 
             _prioritizationType = prioritizationType;
             
-            // calculateNumNodesWithElement();
-            // calculateSumProminencesWithElementAndTotal();
+            _numNodesWithElement = new Dictionary<string, int>();
+            CalculateNumNodesWithElement();
+
+            _sumProminencesForNodesWithElement = new Dictionary<string, float>();
+            CalculateSumProminencesWithElementAndTotal();
+        }
+
+
+        /////////////////////////////////////////////////////////////
+
+        public float DesireForElement(string id)
+        {
+            return _storyState.ValueForElement(id);
+        }
+
+        public float LargestDesireValue()
+        {
+            return _storyState.LargestDesireValue();
+        }
+
+        public MemoryFunction MemoryFunctionForElement(string id)
+        {
+            return _storyState.MemoryFunctionForElement(id);
+        }
+
+        public float StoryStateOnlyElementValue(string id)
+        {
+            return _storyState.ValueForElement(id);
+        }
+
+        public int NumNodesWithElement(string id)
+        {
+            int num = 0;
+
+            if (_numNodesWithElement.ContainsKey(id))
+            {
+                num = _numNodesWithElement[id];
+            }
+
+            return num;
+        }
+
+        public float SumOfProminenceValuesForElement(string id)
+        {
+            float sum = 0;
+
+            if (_sumProminencesForNodesWithElement.ContainsKey(id))
+            {
+                sum = _sumProminencesForNodesWithElement[id];
+            }
+
+            return sum;
+        }
+
+        public float TotalProminenceValues()
+        {
+            return _totalAllProminences;
+        }
+
+        public float ProminenceForMostRecentNodeWithElement(string elementID)
+        {
+            return _storyState.ProminenceForMostRecentNodeWithElement(elementID);
+        }
+
+        public List<StoryNode> ScenesSeen()
+        {
+            return _storyState.ScenesSeen();
+        }
+
+        public StoryNode? NodeWithID(string id)
+        {
+            StoryNode? nodeWithID = null;
+
+            foreach (StoryNode n in _nodes)
+            {
+                if (n.ID.Equals(id))
+                {
+                    nodeWithID = n;
+                    break;
+                }
+            }
+
+            return nodeWithID;
         }
 
 
@@ -113,16 +190,16 @@ namespace StoryEngine.StoryFundamentals
                 return false;
             }
 
-            // if (_globalRules != null)
-            // {
-            //     foreach (GlobalRule r in _globalRules)
-            //     {
-            //         if (!r.isValid())
-            //         {
-            //             return false;
-            //         }
-            //     }
-            // }
+            if (_globalRules != null)
+            {
+                foreach (GlobalRule r in _globalRules)
+                {
+                    if (!r.IsValid())
+                    {
+                        return false;
+                    }
+                }
+            }
 
             return true;
         }
@@ -154,10 +231,10 @@ namespace StoryEngine.StoryFundamentals
             if (_nodeBeingConsumed != null)
             {
                 _nodeBeingConsumed.ApplyOutcomeForSelectedChoice(_storyState, _elementCol);
-                //_nodeBeingConsumed.ResetRelevantDesireValuesInStoryState(_storyState); // TODO
-                //_storyState.IncreaseDesireValues(); // TODO
+                _nodeBeingConsumed.ResetRelevantDesireValuesInStoryState(_storyState);
+                _storyState.IncreaseDesireValues();
 
-                //_storyState.AdjustMemoryValues(_nodeBeingConsumed, _elementCol); // TODO
+                _storyState.AdjustMemoryValues(_nodeBeingConsumed, _elementCol);
             }
             else
             {
@@ -198,7 +275,7 @@ namespace StoryEngine.StoryFundamentals
                         && (!kernelsOnly || node.IsKernel())
                         && (!satellitesOnly || node.IsSatellite())
                         && node.PassesPrerequisite(_storyState)
-                        //&& node.PassesGlobalRules(_globalRules, _storyState) // TODO
+                        && (_globalRules != null && node.PassesGlobalRules(_globalRules, _storyState))
                 )
                 {
                     availableNodes.Add(node);
@@ -268,6 +345,46 @@ namespace StoryEngine.StoryFundamentals
             }
 
             _numKernelsConsumed = 0;
+        }
+
+        /////////////////////////////////////////////////////////////
+
+        protected void CalculateNumNodesWithElement()
+        {
+            _numNodesWithElement = new Dictionary<string, int>();
+            foreach (StoryNode node in _nodes)
+            {
+                foreach (string id in node.ElementIDs())
+                {
+                    int num = 1;
+                    if (_numNodesWithElement.ContainsKey(id))
+                    {
+                        num += _numNodesWithElement[id];
+                    }
+                    _numNodesWithElement[id] = num;
+                }
+            }
+        }
+
+        protected void CalculateSumProminencesWithElementAndTotal()
+        {
+            _sumProminencesForNodesWithElement = new Dictionary<string, float>();
+            _totalAllProminences = 0;
+
+            foreach (StoryNode node in _nodes)
+            {
+                foreach (string id in node.ElementIDs())
+                {
+                    float totalProminence = node.ProminenceValueForElement(id);
+                    _totalAllProminences += totalProminence;
+
+                    if (_sumProminencesForNodesWithElement.ContainsKey(id))
+                    {
+                        totalProminence += _sumProminencesForNodesWithElement[id];
+                    }
+                    _sumProminencesForNodesWithElement[id] = totalProminence;
+                }
+            }
         }
     }
 }

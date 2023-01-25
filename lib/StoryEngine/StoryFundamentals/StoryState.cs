@@ -33,7 +33,7 @@ namespace StoryEngine.StoryFundamentals
         protected Dictionary<string, float> _elementDesires;
 
         // Memory functions for each story element (not stored in XML)
-        //protected Dictionary<string, MemoryFunction> _memoryFunctions;   // TODO
+        protected Dictionary<string, MemoryFunction> _memoryFunctions;
 
         // Element tags
         //@ElementList(required= false, inline= true)
@@ -53,7 +53,7 @@ namespace StoryEngine.StoryFundamentals
             _elementDesires = elementDesires;
             _tagList = tagList;
             
-            //_memoryFunctions = new Dictionary<string, MemoryFunction>();
+            _memoryFunctions = new Dictionary<string, MemoryFunction>();
             _scenesSeen = new List<StoryNode>();
             
             if (_elementValues == null) _elementValues = new Dictionary<string, float>();
@@ -108,7 +108,7 @@ namespace StoryEngine.StoryFundamentals
                 foreach (KeyValuePair<string, float> keyValue in _elementDesires)
                 {
                     toReturn += "\t" + keyValue.Key + ": " + keyValue.Value +
-                                //" / " + _memoryFunctions.get(id).getLastValue() +    // TODO
+                                " / " + _memoryFunctions[keyValue.Key].LastValue() +
                                 "\n";
                 }
             }
@@ -138,10 +138,10 @@ namespace StoryEngine.StoryFundamentals
             {
                 return _elementDesires[id];
             }
-            // else if (_memoryFunctions.containsKey(id)) // TODO
-            // {
-            //     return _memoryFunctions.get(id).getLastValue();
-            // }
+            else if (_memoryFunctions.ContainsKey(id))
+            {
+                return _memoryFunctions[id].LastValue();
+            }
             else
             {
                 System.Console.WriteLine("StoryState has no quantifiable element with id " + id);
@@ -243,13 +243,13 @@ namespace StoryEngine.StoryFundamentals
             return seenScene;
         }
             
-        float ProminenceForMostRecentNodeWithElement(string elementID)
+        internal float ProminenceForMostRecentNodeWithElement(string elementID)
         {
             float desire = -1;
 
             for (int i = _scenesSeen.Count - 1; i >= 0; i--)
             {
-                desire = _scenesSeen[i].GetProminenceValueForElement(elementID);
+                desire = _scenesSeen[i].ProminenceValueForElement(elementID);
                 if (desire > 0) // i.e. if an element is featured at all
                 {
                     break;
@@ -282,7 +282,7 @@ namespace StoryEngine.StoryFundamentals
         }
 
 
-        void IncreaseDesireValues()
+        internal void IncreaseDesireValues()
         {
             foreach (string id in _elementDesires.Keys)
             {
@@ -294,36 +294,36 @@ namespace StoryEngine.StoryFundamentals
             
         ///////////////////////////////////////////////////////////////
             
-        // MemoryFunction GetMemoryFunctionForElement(string id)
-        // {
-        //     return m_memoryFunctions.get(id);
-        // }
+        internal MemoryFunction MemoryFunctionForElement(string id)
+        {
+            return _memoryFunctions[id];
+        }
 
-        // void AdjustMemoryValues(StoryNode node, StoryElementCollection elementCol)
-        // {
-        //     ArrayList<string> nodeElementIDs = node.getElementIDs();
+        internal void AdjustMemoryValues(StoryNode node, StoryElementCollection elementCol)
+        {
+            List<string> nodeElementIDs = node.ElementIDs();
 
-        //     for (string id : elementCol.getMemoryValueIDs()) // process all memory-related elements in the collection
-        //     {
-        //         MemoryFunction memFunc = m_memoryFunctions.get(id);
-        //         if (memFunc == null)
-        //         {
-        //             memFunc = new MemoryFunction(id);
-        //             m_memoryFunctions.put(id, memFunc);
-        //         }
+            foreach (string id in elementCol.MemoryValueIDs()) // process all memory-related elements in the collection
+            {
+                MemoryFunction memFunc = _memoryFunctions[id];
+                if (memFunc == null)
+                {
+                    memFunc = new MemoryFunction(id);
+                    _memoryFunctions[id] = memFunc;
+                }
 
-        //         if (nodeElementIDs.contains(id)) // Elements shown in the node
-        //         {
-        //             memFunc.timeStepFeaturingElement(node.getProminenceValueForElement(id));
-        //         }
-        //         else // Elements not shown in the node
-        //         {
-        //             memFunc.timeStepNotFeaturingElement();
-        //         }
+                if (nodeElementIDs.Contains(id)) // Elements shown in the node
+                {
+                    memFunc.DoTimeStepFeaturingElement(node.ProminenceValueForElement(id));
+                }
+                else // Elements not shown in the node
+                {
+                    memFunc.DoTimeStepNotFeaturingElement();
+                }
 
-        //         //System.out.println("Node " + node.getID() + " - " + id + " -> " + memFunc.getLastValue());
-        //     }
-        // }
+                System.Console.WriteLine("Node " + node.ID + " - " + id + " -> " + memFunc.LastValue());
+            }
+        }
             
             
         ///////////////////////////////////////////////////////////////

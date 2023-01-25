@@ -38,7 +38,7 @@ namespace StoryEngine.StoryNodes
         protected Prerequisite? _prerequisite;
 
         // @ElementList(name="choices", inline=true, required=false)
-        protected List<Choice>? _choices; // TODO this might have to be required
+        protected List<Choice>? _choices;
         
         protected bool _consumed;
         protected int _selectedChoiceIndex;
@@ -85,7 +85,7 @@ namespace StoryEngine.StoryNodes
             return features;
         }
         
-        List<string> ElementIDs()
+        internal List<string> ElementIDs()
         {
             List<string> elementIDs = new List<string>();
             
@@ -123,26 +123,26 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        // boolean passesGlobalRules(ArrayList<GlobalRule> rules, StoryState storyState)
-        // {
-        //     if (rules == null || rules.isEmpty())
-        //     {
-        //         return true;
-        //     }
-        //     else
-        //     {
-        //         boolean passes = true;
-        //         for (GlobalRule rule : rules)
-        //         {
-        //             if (rule.appliesToNode(this) && !rule.passes(storyState))
-        //             {
-        //                 passes = false;
-        //                 break;
-        //             }
-        //         }
-        //         return passes;
-        //     }
-        // }
+        internal bool PassesGlobalRules(List<GlobalRule> rules, StoryState storyState)
+        {
+            if (rules == null || rules.Any())
+            {
+                return true;
+            }
+            else
+            {
+                bool passes = true;
+                foreach (GlobalRule rule in rules)
+                {
+                    if (rule.AppliesToNode(this) && !rule.Passes(storyState))
+                    {
+                        passes = false;
+                        break;
+                    }
+                }
+                return passes;
+            }
+        }
         
         
         // ////////////////////////////////////////////////////////////////
@@ -185,14 +185,14 @@ namespace StoryEngine.StoryNodes
         // ////////////////////////////////////////////////////////////////
         
         
-        internal float GetProminenceValueForElement(string elementID)
+        internal float ProminenceValueForElement(string elementID)
         {
             float prominence = 0;
             
-            // if (_functionalDesc != null) // TODO
-            // {
-            //     prominence = _functionalDesc.GetProminenceValueForElement(elementID);
-            // }
+            if (_functionalDesc != null)
+            {
+                prominence = _functionalDesc.ProminenceValueForElement(elementID);
+            }
             
             return prominence;
         }
@@ -307,12 +307,12 @@ namespace StoryEngine.StoryNodes
             }
         }
         
-        void ResetRelevantDesireValuesInStoryState(StoryState state)
+        internal void ResetRelevantDesireValuesInStoryState(StoryState state)
         {
             // Reset desire values in state that appear in the functional description
             if (_functionalDesc != null)
             {
-                //_functionalDesc.resetDesireValues(state); // TODO
+                _functionalDesc.ResetDesireValues(state);
             }
         }
 
