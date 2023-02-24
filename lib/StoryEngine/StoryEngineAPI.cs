@@ -7,7 +7,7 @@ using StoryEngine.StoryNodes;
 
 namespace StoryEngine
 {
-    public class StoryEngineAPI
+    public partial class StoryEngineAPI
     {
         private Story _story;
         internal Story Story => _story;
