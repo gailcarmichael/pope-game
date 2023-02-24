@@ -272,7 +272,7 @@ namespace StoryEngine.StoryNodes
         ////////////////////////////////////////////////////////////////
         
         
-        void ResetDesireValues(StoryState state)
+        internal void ResetDesireValues(StoryState state)
         {
             foreach (String id in _elementProminences.Keys)
             {
