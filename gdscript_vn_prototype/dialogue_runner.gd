@@ -6,7 +6,7 @@ var dialogue_index = 0
 var finished
 var active
 
-var position
+var render_position
 var expression
 
 func _ready():
@@ -23,7 +23,7 @@ func _physics_process(delta):
 				finished = true
 		if $DialogueContainer/Label.text == "Johanne":
 			$SpaceCutieMeEvolved.visible = true
-			if position == "left_pos":
+			if render_position == "left_pos":
 				$SpaceCutieMeEvolved.global_position = get_parent().get_node("left_pos").position
 		if $Button.text == "":
 			$Button.visible = false
@@ -46,7 +46,7 @@ func load_dialogue():
 		$Button.text = text[dialogue_index]["Choices"][0]
 		$Button2.text = text[dialogue_index]["Choices"][1]
 		
-		position = text[dialogue_index]["Name"]
+		render_position = text[dialogue_index]["Name"]
 		
 		$DialogueContainer/RichTextLabel.percent_visible = 0
 		$DialogueContainer/Tween.interpolate_property(
