@@ -1,6 +1,6 @@
 extends Control
 
-onready var text = get_parent().get_node("Node").dialogue_1
+@onready var text = get_parent().get_node("Node").dialogue_1
 
 var dialogue_index = 0
 var finished
@@ -41,7 +41,7 @@ func load_dialogue():
 		finished = false
 		
 		$DialogueContainer.visible = true
-		$DialogueContainer/RichTextLabel.bbcode_text = text[dialogue_index]["Text"]
+		$DialogueContainer/RichTextLabel.text = text[dialogue_index]["Text"]
 		$DialogueContainer/Label.text = text[dialogue_index]["Name"]
 		$Button.text = text[dialogue_index]["Choices"][0]
 		$Button2.text = text[dialogue_index]["Choices"][1]

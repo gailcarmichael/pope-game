@@ -6,13 +6,18 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
+config_version=5
 
 [application]
 
 config/name="Pope Game"
 run/main_scene="res://TestScene/TestScene.tscn"
+config/features=PackedStringArray("4.0", "C#")
 config/icon="res://TestScene/icon.png"
+
+[dotnet]
+
+project/assembly_name="Pope Game"
 
 [gui]
 
