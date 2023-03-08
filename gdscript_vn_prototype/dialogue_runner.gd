@@ -6,8 +6,9 @@ var dialogue_index = 0
 var finished
 var active
 
-var position
+var render_position
 var expression
+var tween
 
 func _ready():
 	load_dialogue()
@@ -18,12 +19,11 @@ func _physics_process(delta):
 			if finished == true:
 				load_dialogue()
 			else:
-				$DialogueContainer/Tween.stop_all()
-				$DialogueContainer/RichTextLabel.percent_visible = 1
+				$DialogueContainer/RichTextLabel.visible_ratio = 1
 				finished = true
 		if $DialogueContainer/Label.text == "Johanne":
 			$SpaceCutieMeEvolved.visible = true
-			if position == "left_pos":
+			if render_position == "left_pos":
 				$SpaceCutieMeEvolved.global_position = get_parent().get_node("left_pos").position
 		if $Button.text == "":
 			$Button.visible = false
@@ -46,14 +46,12 @@ func load_dialogue():
 		$Button.text = text[dialogue_index]["Choices"][0]
 		$Button2.text = text[dialogue_index]["Choices"][1]
 		
-		position = text[dialogue_index]["Name"]
+		render_position = text[dialogue_index]["Name"]
 		
-		$DialogueContainer/RichTextLabel.percent_visible = 0
-		$DialogueContainer/Tween.interpolate_property(
-			$DialogueContainer/RichTextLabel, "percent_visible", 0, 1, 2,
-			Tween.TRANS_LINEAR, Tween.EASE_IN_OUT
-		)
-		$DialogueContainer/Tween.start()
+		$DialogueContainer/RichTextLabel.visible_ratio = 0
+		# print(text[dialogue_index]["Text"])
+		tween = get_tree().create_tween()
+		tween.tween_property($DialogueContainer/RichTextLabel, "visible_ratio", 1, 2).from(0).set_ease(2).set_trans(0)
 		
 	else:
 		$DialogueContainer.visible = false
@@ -61,8 +59,6 @@ func load_dialogue():
 		active = false
 	dialogue_index += 1
 	
-func _on_Tween_tween_complete(obj, key):
-	finished = true
 
 func _on_Button_pressed():
 	if $Button.text == "Hi there":
@@ -79,3 +75,6 @@ func _on_Button2_pressed():
 		text = get_parent().get_node("Node").after_choice_2
 		dialogue_index = 0
 		load_dialogue()
+
+func _on_Tween_finished():
+	finished = true

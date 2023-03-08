@@ -1,75 +1,48 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=7 format=3 uid="uid://db4wfd1v1luav"]
 
-[ext_resource path="res://Background.jpg" type="Texture2D" id=1]
-[ext_resource path="res://spacecutie.png" type="Texture2D" id=2]
-[ext_resource path="res://DialogueContainer.png" type="Texture2D" id=3]
-[ext_resource path="res://dialogue.gd" type="Script" id=4]
-[ext_resource path="res://dialogue_runner.gd" type="Script" id=5]
-[ext_resource path="res://fonts/poco/Poco.tres" type="FontFile" id=6]
-[ext_resource path="res://fonts/poco/Poco.ttf" type="FontFile" id=7]
-
-[sub_resource type="FontFile" id=1]
-size = 31
-outline_size = 8
-outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
-use_mipmaps = true
-spacing_top = -18
-spacing_bottom = 2
-extra_spacing_char = 1
-extra_spacing_space = 1
-font_data = ExtResource( 7 )
-
-[sub_resource type="FontFile" id=3]
-size = 30
-outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
-use_mipmaps = true
-spacing_top = -18
-spacing_bottom = 2
-font_data = ExtResource( 7 )
-
-[sub_resource type="FontFile" id=2]
-size = 30
-outline_color = Color( 0.94902, 0.654902, 0.937255, 1 )
-use_mipmaps = true
-spacing_top = -18
-spacing_bottom = 2
-font_data = ExtResource( 7 )
+[ext_resource type="Texture2D" uid="uid://ub422hpsxo28" path="res://Background.jpg" id="1"]
+[ext_resource type="Texture2D" uid="uid://dsjg6u2nxbstq" path="res://spacecutie.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://but7amyjdal3r" path="res://DialogueContainer.png" id="3"]
+[ext_resource type="Script" path="res://dialogue.gd" id="4"]
+[ext_resource type="Script" path="res://dialogue_runner.gd" id="5"]
+[ext_resource type="FontFile" uid="uid://cg2jbmrugg3li" path="res://fonts/connection/Connection.otf" id="5_qvyc2"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Background" type="Sprite2D" parent="."]
-position = Vector2( 512.5, 300 )
-scale = Vector2( 0.533854, 0.555555 )
-texture = ExtResource( 1 )
+position = Vector2(512.5, 300)
+scale = Vector2(0.533854, 0.555555)
+texture = ExtResource("1")
 
 [node name="left_pos" type="Marker2D" parent="."]
-position = Vector2( 184, 283 )
+position = Vector2(184, 283)
 
 [node name="Control" type="Control" parent="."]
+custom_minimum_size = Vector2(400, 800)
+layout_mode = 3
+anchors_preset = 0
 offset_top = 5.0
 offset_right = 1021.0
 offset_bottom = 600.0
-script = ExtResource( 5 )
+script = ExtResource("5")
 
 [node name="space_cutie" type="Sprite2D" parent="Control"]
-position = Vector2( 183, 278 )
-scale = Vector2( 0.56, 0.55 )
-texture = ExtResource( 2 )
-offset = Vector2( 16.0714, -81.8181 )
+position = Vector2(183, 278)
+scale = Vector2(0.56, 0.55)
+texture = ExtResource("2")
+offset = Vector2(16.0714, -81.8181)
 
 [node name="DialogueContainer" type="Sprite2D" parent="Control"]
-position = Vector2( 513, 510 )
-scale = Vector2( 0.550592, 0.537926 )
-texture = ExtResource( 3 )
+position = Vector2(513, 510)
+scale = Vector2(0.550592, 0.537926)
+texture = ExtResource("3")
 
 [node name="Label" type="Label" parent="Control/DialogueContainer"]
 offset_left = -899.032
 offset_top = -180.322
 offset_right = -838.032
 offset_bottom = -154.322
-scale = Vector2( 2, 2 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = SubResource( 1 )
+scale = Vector2(2, 2)
 text = "Name"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/DialogueContainer"]
@@ -77,42 +50,32 @@ offset_left = -886.0
 offset_top = -121.0
 offset_right = 890.0
 offset_bottom = 111.0
-custom_colors/default_color = Color( 0, 0, 0, 1 )
-custom_colors/font_color_selected = Color( 0, 0, 0, 1 )
-custom_fonts/normal_font = ExtResource( 6 )
+theme_override_colors/font_selected_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_fonts/normal_font = ExtResource("5_qvyc2")
+theme_override_font_sizes/normal_font_size = 100
 bbcode_enabled = true
-
-[node name="Tween" type="Tween" parent="Control/DialogueContainer"]
 
 [node name="Button" type="Button" parent="Control"]
 visible = false
+layout_mode = 0
 offset_left = 523.0
 offset_top = 170.0
 offset_right = 760.0
 offset_bottom = 215.0
-custom_colors/font_color_disabled = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_focus = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_hover = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_pressed = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_fonts/font = SubResource( 3 )
 action_mode = 0
 
 [node name="Button2" type="Button" parent="Control"]
 visible = false
+layout_mode = 0
 offset_left = 521.0
 offset_top = 320.0
 offset_right = 758.0
 offset_bottom = 365.0
-custom_colors/font_color_disabled = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_focus = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_hover = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_colors/font_color_pressed = Color( 0.929412, 0.690196, 0.898039, 1 )
-custom_fonts/font = SubResource( 2 )
 
 [node name="Node" type="Node" parent="."]
-script = ExtResource( 4 )
+script = ExtResource("4")
 
 [connection signal="pressed" from="Control/Button" to="Control" method="_on_Button_pressed"]
 [connection signal="pressed" from="Control/Button2" to="Control" method="_on_Button2_pressed"]
