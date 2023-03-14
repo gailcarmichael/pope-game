@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-public struct ChoiceData
+internal struct ChoiceData
 {
-    public string? text; //optional
-    public Outcome outcome;
+    internal string? text; //optional
+    internal Outcome outcome;
 }

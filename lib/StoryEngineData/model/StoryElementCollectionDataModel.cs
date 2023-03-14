@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-public struct StoryElementCollection
+internal struct StoryElementCollection
 {
-    public List<StoryElement> storyElements;
+    internal List<StoryElement> storyElements;
 }

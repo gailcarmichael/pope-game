@@ -2,9 +2,9 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-public struct StoryState
+internal struct StoryState
 {
-    public Dictionary<string, float> elementValues;
-    public Dictionary<string, float> elementDesires;
-    public List<string> tagList;
+    internal Dictionary<string, float> elementValues;
+    internal Dictionary<string, float> elementDesires;
+    internal List<string> tagList;
 }

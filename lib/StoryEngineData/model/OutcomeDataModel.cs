@@ -2,29 +2,29 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-public struct Outcome
+internal struct Outcome
 {
-    public string text;
+    internal string text;
     
-    public List<QuantifiableModifier>? quantifiableModifier; //optional
-    public List <TagModifier>? tagModifier; //optional
+    internal List<QuantifiableModifier>? quantifiableModifier; //optional
+    internal List <TagModifier>? tagModifier; //optional
 }
 
-public struct QuantifiableModifier
+internal struct QuantifiableModifier
 {
-    public string elementID;
-    public bool absolute;
-    public int delta;
+    internal string elementID;
+    internal bool absolute;
+    internal int delta;
 }
 
-public enum TagAction
+internal enum TagAction
 {
     add,
     remove
 }
 
-public struct TagModifier
+internal struct TagModifier
 {
-    public string elementID;
-    public TagAction action;
+    internal string elementID;
+    internal TagAction action;
 }

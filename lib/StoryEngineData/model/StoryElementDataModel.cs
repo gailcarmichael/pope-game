@@ -1,16 +1,16 @@
 namespace StoryEngineDataModel;
 
-public enum ElementType
+internal enum ElementType
 {
     quantifiable, // can attach a number to it
     quantifiableStoryStateOnly, // can only be used in the story state (not with nodes)
     taggable, // can tag nodes or the story state with it
 }
 
-public struct StoryElement
+internal struct StoryElement
 {
-    public string id;
-    public string category;
-    public string name;
-    public ElementType type;
+    internal string id;
+    internal string category;
+    internal string name;
+    internal ElementType type;
 }
