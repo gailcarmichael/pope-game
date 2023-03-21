@@ -2,17 +2,10 @@ using System.Collections.Generic;
 
 namespace StoryEngine.StoryEngineDataModel;
 
-internal struct OutcomeDataModel
+public record OutcomeDataModel(string Text)
 {
-    internal string text;
-    
-    internal List<QuantifiableModifierDataModel>? quantifiableModifiers; //optional
-    internal List <TagModifierDataModel>? tagModifiers; //optional
-
-    public OutcomeDataModel(string new_text)
-    {
-        text = new_text;
-    }
+    internal List<QuantifiableModifierDataModel>? QuantifiableModifiers { get; init; } //optional
+    internal List <TagModifierDataModel>? TagModifiers {get; init; } //optional
 }
 
 internal struct QuantifiableModifierDataModel

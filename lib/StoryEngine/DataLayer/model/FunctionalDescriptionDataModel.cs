@@ -2,8 +2,7 @@ using System.Collections.Generic;
 
 namespace StoryEngine.StoryEngineDataModel;
 
-internal struct FunctionalDescriptionDataModel
+public record FunctionalDescriptionDataModel(Dictionary<string, int> ElementProminences)
 {
-    internal Dictionary<string, int> elementProminences;
-    internal List<string>? taggableElementIDs; //optional
+    public List<string>? TaggableElementIDs { get; init; } //optional
 }

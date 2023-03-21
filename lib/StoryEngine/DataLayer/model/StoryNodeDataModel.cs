@@ -2,43 +2,23 @@ using System.Collections.Generic;
 
 namespace StoryEngine.StoryEngineDataModel;
 
-internal enum NodeTypeDataModel
+public enum NodeTypeDataModel
 {
     kernel,
     satellite
 }
 
-internal struct StoryNodeDataModel
+public record StoryNodeDataModel(
+    string ID,
+    NodeTypeDataModel Type,
+    string TeaserText,
+    string EventText,
+    bool LastNode = false
+)
 {
-    internal string id;
-    internal NodeTypeDataModel type;
-    internal bool lastNode;
+    public FunctionalDescriptionDataModel? FunctionalDescription { get; init; } //optional
 
-    internal string teaserText;
-    internal string eventText;
+    public PrerequisiteDataModel? Prerequisite { get; init; } //optional
 
-    internal FunctionalDescriptionDataModel? functionalDescription; //optional
-
-    internal PrerequisiteDataModel? prerequisite; //optional
-
-    internal List<ChoiceDataModel>? choices; //optional
-
-    internal StoryNodeDataModel(
-            string new_id,
-            NodeTypeDataModel new_type,
-            string new_teaserText,
-            string new_eventText,
-            FunctionalDescriptionDataModel? new_funcDesc = null,
-            PrerequisiteDataModel? new_prerequisite = null,
-            List<ChoiceDataModel>? new_choices = null,
-            bool new_lastNode = false)
-    {
-        id = new_id;
-        type = new_type;
-        teaserText = new_teaserText;
-        eventText = new_eventText;
-        functionalDescription = new_funcDesc;
-        prerequisite = new_prerequisite;
-        choices = new_choices;
-    }
+    public List<ChoiceDataModel>? Choices { get; init; } //optional
 }

@@ -2,37 +2,37 @@ using System.Collections.Generic;
 
 namespace StoryEngine.StoryEngineDataModel;
 
-internal enum HowManyDataModel { all, any }
-internal enum ListTypeForNodesDataModel { tags, storyElements, nodeIDs }
-internal enum NodeStateDataModel { seen, notSeen }
-internal enum TagStateDataModel { present, notPresent }
+public enum HowManyDataModel { all, any }
+public enum ListTypeForNodesDataModel { tags, storyElements, nodeIDs }
+public enum NodeStateDataModel { seen, notSeen }
+public enum TagStateDataModel { present, notPresent }
 
-internal struct GlobalRuleDataModel
+public record GlobalRuleDataModel
 {
-    internal string? id;
-    internal NodeFilterDataModel? nodeFilter;
-    internal StoryStateFilterDataModel? storyStateFilter;
-    internal NodesAffectedDataModel? nodesAffected;
+    public string? ID { get; init; }
+    public NodeFilterDataModel? NodeFilter { get; init; }
+    public StoryStateFilterDataModel? StoryStateFilter { get; init; }
+    public NodesAffectedDataModel? NodesAffected { get; init; }
 }
 
-internal struct NodeFilterDataModel
+public record NodeFilterDataModel(ListTypeForNodesDataModel CheckNodesUsing,
+                                    List<string> ListToCheck,
+                                    HowManyDataModel HowManyRequired,
+                                    NodeStateDataModel NodeState)
 {
-    internal ListTypeForNodesDataModel checkNodesUsing;
-    internal List<string> listToCheck;
-    internal HowManyDataModel howManyRequired;
-    internal NodeStateDataModel nodeState;
+
 }
 
-internal struct StoryStateFilterDataModel
+public record StoryStateFilterDataModel(List<string> TagsToCheck, 
+                                        HowManyDataModel HowManyRequired, 
+                                        TagStateDataModel TagState)
 {
-    internal List<string> tagsToCheck;
-    internal HowManyDataModel howManyRequired;
-    internal TagStateDataModel tagState;
+
 }
 
-internal struct NodesAffectedDataModel
+public record NodesAffectedDataModel(ListTypeForNodesDataModel CheckNodesUsing,
+                                        List<string> ListToCheck,
+                                        HowManyDataModel HowManyRequired)
 {
-    internal ListTypeForNodesDataModel checkNodesUsing;
-    internal List<string> listToCheck;
-    internal HowManyDataModel howManyRequired;
+
 }
