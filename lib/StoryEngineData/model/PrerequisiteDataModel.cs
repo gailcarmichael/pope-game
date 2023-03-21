@@ -2,16 +2,16 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-internal struct Prerequisite
+public struct Prerequisite
 {
-    internal string? id; //optional
+    public string? id; //optional
 
-    internal List<QuantifiableElementRequirement>? quantifiableRequirements; //optional
-    internal List<TagRequirement>? tagRequirements; //optional
-    internal List<SceneRequirement>? sceneRequirements; //optional
+    public List<QuantifiableElementRequirement>? quantifiableRequirements; //optional
+    public List<TagRequirement>? tagRequirements; //optional
+    public List<SceneRequirement>? sceneRequirements; //optional
 }
 
-internal enum BinaryRestriction
+public enum BinaryRestriction
 {
     equal,
     lessThan,
@@ -20,33 +20,33 @@ internal enum BinaryRestriction
     greaterThanOrEqual
 }
 
-internal enum ListRestriction
+public enum ListRestriction
 {
     contains,
     doesNotContain
 }
 
-internal enum SceneRestriction
+public enum SceneRestriction
 {
     seen,
     notSeen
 }
 
-internal struct QuantifiableElementRequirement
+public struct QuantifiableElementRequirement
 {
-    internal string elementID;
-    internal BinaryRestriction operatorToApply;
-    internal int compareTo;
+    public string elementID;
+    public BinaryRestriction operatorToApply;
+    public int compareTo;
 }
 
-internal struct TagRequirement
+public struct TagRequirement
 {
-    internal string elementID;
-    internal ListRestriction operatorToApply;
+    public string elementID;
+    public ListRestriction operatorToApply;
 }
 
-internal struct SceneRequirement
+public struct SceneRequirement
 {
-    internal string sceneID;
-    internal SceneRestriction operatorToApply;
+    public string sceneID;
+    public SceneRestriction operatorToApply;
 }

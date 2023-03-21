@@ -2,24 +2,24 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-internal enum NodeType
+public enum NodeType
 {
     kernel,
     satellite
 }
 
-internal struct StoryNode
+public struct StoryNode
 {
-    internal string id;
-    internal NodeType type;
-    internal bool lastNode;
+    public string id;
+    public NodeType type;
+    public bool lastNode;
 
-    internal string teaserText;
-    internal string eventText;
+    public string teaserText;
+    public string eventText;
 
-    internal FunctionalDescription? functionalDescription; //optional
+    public FunctionalDescription? functionalDescription; //optional
 
-    internal Prerequisite? prerequisite; //optional
+    public Prerequisite? prerequisite; //optional
 
-    internal List<ChoiceData>? choices; //optional
+    public List<ChoiceData>? choices; //optional
 }

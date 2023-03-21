@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-internal enum PrioritizationType
+public enum PrioritizationType
 {
     strawManRandom,
     sumOfCategoryMaximums,
@@ -10,15 +10,15 @@ internal enum PrioritizationType
     bestObjectiveFunction
 }
 
-internal struct Story
+public struct Story
 {
-    internal int numTopScenesForUser;
-    internal PrioritizationType? prioritizationType; //optional
+    public int numTopScenesForUser;
+    public PrioritizationType? prioritizationType; //optional
 
-    internal List<StoryNode> nodes;
-    internal StoryNode? startingNode; //optional
+    public List<StoryNode> nodes;
+    public StoryNode? startingNode; //optional
 
-    internal StoryState initialStoryState;
+    public StoryState initialStoryState;
 
-    internal List<GlobalRule>? globalRules; // optional
+    public List<GlobalRule>? globalRules; // optional
 }

@@ -2,37 +2,37 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-internal enum HowMany { all, any }
-internal enum ListTypeForNodes { tags, storyElements, nodeIDs }
-internal enum NodeState { seen, notSeen }
-internal enum TagState { present, notPresent }
+public enum HowMany { all, any }
+public enum ListTypeForNodes { tags, storyElements, nodeIDs }
+public enum NodeState { seen, notSeen }
+public enum TagState { present, notPresent }
 
-internal struct GlobalRule
+public struct GlobalRule
 {
-    internal string? id;
-    internal NodeFilter? nodeFilter;
-    internal StoryStateFilter? storyStateFilter;
-    internal NodesAffected? nodesAffected;
+    public string? id;
+    public NodeFilter? nodeFilter;
+    public StoryStateFilter? storyStateFilter;
+    public NodesAffected? nodesAffected;
 }
 
-internal struct NodeFilter
+public struct NodeFilter
 {
-    internal ListTypeForNodes checkNodesUsing;
-    internal List<string> listToCheck;
-    internal HowMany howManyRequired;
-    internal NodeState nodeState;
+    public ListTypeForNodes checkNodesUsing;
+    public List<string> listToCheck;
+    public HowMany howManyRequired;
+    public NodeState nodeState;
 }
 
-internal struct StoryStateFilter
+public struct StoryStateFilter
 {
-    internal List<string> tagsToCheck;
-    internal HowMany howManyRequired;
-    internal TagState tagState;
+    public List<string> tagsToCheck;
+    public HowMany howManyRequired;
+    public TagState tagState;
 }
 
-internal struct NodesAffected
+public struct NodesAffected
 {
-    internal ListTypeForNodes checkNodesUsing;
-    internal List<string> listToCheck;
-    internal HowMany howManyRequired;
+    public ListTypeForNodes checkNodesUsing;
+    public List<string> listToCheck;
+    public HowMany howManyRequired;
 }

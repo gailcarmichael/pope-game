@@ -2,8 +2,8 @@ using System.Collections.Generic;
 
 namespace StoryEngineDataModel;
 
-internal struct FunctionalDescription
+public struct FunctionalDescription
 {
-    internal Dictionary<string, int> elementProminences;
-    internal List<string>? elementIDs; //optional
+    public Dictionary<string, int> elementProminences;
+    public List<string>? elementIDs; //optional
 }
