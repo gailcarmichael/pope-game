@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using StoryEngine;
+using StoryEngine.StoryEngineDataModel;
 
 public partial class TestSprite : Sprite2D
 {
@@ -27,6 +28,10 @@ public partial class TestSprite : Sprite2D
 		GD.Print(storyEngine.CurrentNodeChoiceText(0));
 
         GD.Print("\n\n");
-        GD.Print(StoryEngineAPI.GetTestStoryJSON());
+        string json = StoryEngineAPI.GetTestStoryJSON();
+        GD.Print(json);
+		StoryDataModel? story = StoryEngineAPI.DeserializeStoryFromJSON(json);
+        GD.Print("\n\n");
+		//if (story != null) GD.Print(StoryEngineAPI.SerializeStoryToJSON(story));
 	}
 }

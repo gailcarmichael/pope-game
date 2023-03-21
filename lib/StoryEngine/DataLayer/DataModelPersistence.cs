@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace StoryEngine.StoryEngineDataModel;
 
@@ -6,19 +7,29 @@ internal static class DataModelPersistence
 {
     internal static string WriteStoryToString(StoryDataModel story)
     {
-        var options = new JsonSerializerOptions { WriteIndented = true };
-        string jsonString = JsonSerializer.Serialize(story, options);
+        var options = new JsonSerializerOptions {
+            WriteIndented = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
+        };
 
-        return jsonString;
+        return JsonSerializer.Serialize(story, options);
     }
 
-    internal static void WriteStoryToFile(StoryDataModel story, string filename)
-    {
-        
-    }
 
-    internal static /*Story*/ string ReadStoryFromFile(string filename)
+    internal static StoryDataModel? ReadStoryFromString(string storyString)
     {
-        return "";
+        var options = new JsonSerializerOptions
+        {
+            Converters =
+            {
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+            }
+        };
+
+        return JsonSerializer.Deserialize<StoryDataModel>(storyString, options);
     }
 }

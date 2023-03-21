@@ -293,6 +293,15 @@ namespace StoryEngine
         /////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////
 
+        public static string SerializeStoryToJSON(StoryDataModel story)
+        {
+            return DataModelPersistence.WriteStoryToString(story);
+        }
+
+        public static StoryDataModel? DeserializeStoryFromJSON(string json)
+        {
+            return DataModelPersistence.ReadStoryFromString(json);
+        }
 
         public static string GetTestStoryJSON()
         {
