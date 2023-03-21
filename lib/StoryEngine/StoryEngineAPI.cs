@@ -4,6 +4,7 @@ using StoryEngine.StoryFundamentals;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryNodes;
 
+using StoryEngine.StoryEngineDataModel;
 
 namespace StoryEngine
 {
@@ -27,7 +28,9 @@ namespace StoryEngine
             RefreshCurrentSatellites();
         }
 
-        public bool IsStoryValid() => Story.IsValid();///////////////////////
+        public bool IsStoryValid() => Story.IsValid();
+        
+        ///////////////////////
 
         private void RefreshCurrentSatellites()
         {
@@ -196,7 +199,7 @@ namespace StoryEngine
 
         // TODO: find a better place for these test stories eventually
 
-        private Story GetTestStory1()
+        private static Story GetTestStory1()
         {
             /////////////////////////////////////////////////////////////////////////////
 
@@ -283,6 +286,110 @@ namespace StoryEngine
             System.Console.WriteLine("Test story is valid: " + story.IsValid());
 
             return story;
+        }
+
+
+        /////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////
+
+
+        public static string GetTestStoryJSON()
+        {
+            /////////////////////////////////////////////////////////////////////////////
+
+            StoryElementCollectionDataModel elements = new StoryElementCollectionDataModel();
+
+            elements.storyElements.Add(new StoryElementDataModel("heroTheme", "themes", "heroism", ElementTypeDataModel.quantifiable));
+            elements.storyElements.Add(new StoryElementDataModel("friendshipTheme", "themes", "friendship", ElementTypeDataModel.quantifiable));
+
+            elements.storyElements.Add(new StoryElementDataModel("dawgCharacter", "characters", "dawg", ElementTypeDataModel.quantifiable));
+            elements.storyElements.Add(new StoryElementDataModel("kittyCharacter", "characters", "kitty", ElementTypeDataModel.quantifiable));
+
+            elements.storyElements.Add(new StoryElementDataModel("tension", "tension", "tension", ElementTypeDataModel.quantifiableStoryStateOnly));
+
+            elements.storyElements.Add(new StoryElementDataModel("openWaterTerrain", "terrains", "openWater", ElementTypeDataModel.taggable));
+            elements.storyElements.Add(new StoryElementDataModel("mountainTerrain", "terrains", "mountains", ElementTypeDataModel.taggable));
+
+            elements.storyElements.Add(new StoryElementDataModel("sunnyWeather", "weather", "sunny", ElementTypeDataModel.taggable));
+            elements.storyElements.Add(new StoryElementDataModel("rainyWeather", "weather", "rainy", ElementTypeDataModel.taggable));
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            Dictionary<string, float> values = new Dictionary<string, float>();
+            values["tension"] = 3.0f;
+
+            Dictionary<string, float> desires = new Dictionary<string, float>();
+            desires["heroTheme"] = 1.0f;
+            desires["friendshipTheme"] = 1.0f;
+            desires["dawgCharacter"] = 1.0f;
+            desires["kittyCharacter"] = 1.0f;
+
+            StoryStateDataModel initStoryState = new StoryStateDataModel();
+            initStoryState.elementValues = values;
+            initStoryState.elementDesires = desires;
+            initStoryState.tagList = new List<string>();
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            OutcomeDataModel o = new OutcomeDataModel("outcome text");
+
+            o.quantifiableModifiers = new List<QuantifiableModifierDataModel>();
+            o.quantifiableModifiers.Add(new QuantifiableModifierDataModel("dawgCharacter", false, -1));
+
+            o.tagModifiers = new List<TagModifierDataModel>();
+            o.tagModifiers.Add(new TagModifierDataModel("sunnyWeather", TagActionDataModel.add));
+
+            List<ChoiceDataModel> choices = new List<ChoiceDataModel>();
+            ChoiceDataModel c1 = new ChoiceDataModel("choice text", o);
+            choices.Add(c1);
+
+            FunctionalDescriptionDataModel funcDesc = new FunctionalDescriptionDataModel();
+            
+            Dictionary<string, int> funcDescElementProminences = new Dictionary<string, int>();
+            funcDescElementProminences.Add("dawgCharacter", 3);
+            funcDesc.elementProminences = funcDescElementProminences;
+            
+            List<string> funcDescTags = new List<string>();
+            funcDescTags.Add("sunnyWeather");
+            funcDesc.taggableElementIDs = funcDescTags;
+
+            PrerequisiteDataModel prereq = new PrerequisiteDataModel();
+            
+            prereq.quantifiableRequirements = new List<QuantifiableElementRequirementDataModel>();
+            prereq.quantifiableRequirements.Add(new QuantifiableElementRequirementDataModel(
+                    "kittyCharacter", BinaryRestrictionDataModel.greaterThan, 4));
+
+            prereq.tagRequirements = new List<TagRequirementDataModel>();
+            prereq.tagRequirements.Add(new TagRequirementDataModel(
+                    "rainyWeather", ListRestrictionDataModel.contains));
+
+            prereq.sceneRequirements = new List<SceneRequirementDataModel>();
+            prereq.sceneRequirements.Add(new SceneRequirementDataModel(
+                    "FirstScene", SceneRestrictionDataModel.notSeen));
+
+
+            List<StoryNodeDataModel> nodes = new List<StoryNodeDataModel>();
+            nodes.Add(new StoryNodeDataModel("node1", NodeTypeDataModel.kernel, "node 1 teaser", "node 1 event"));
+            nodes.Add(new StoryNodeDataModel("node2", NodeTypeDataModel.kernel, "node 2 teaser", "node 2 event", funcDesc, prereq, choices));
+            nodes.Add(new StoryNodeDataModel("node3", NodeTypeDataModel.kernel, "node 3 teaser", "node 3 event", funcDesc, prereq, choices));
+            nodes.Add(new StoryNodeDataModel("node4", NodeTypeDataModel.satellite, "node 4 teaser", "node 4 event", funcDesc, prereq));
+            nodes.Add(new StoryNodeDataModel("node5", NodeTypeDataModel.satellite, "node 5 teaser", "node 5 event", funcDesc));
+            nodes.Add(new StoryNodeDataModel("node6", NodeTypeDataModel.satellite, "node 6 teaser", "node 6 event", funcDesc));
+            nodes.Add(new StoryNodeDataModel("node7", NodeTypeDataModel.satellite, "node 7 teaser", "node 7 event", funcDesc));
+            nodes.Add(new StoryNodeDataModel("node8", NodeTypeDataModel.satellite, "node 8 teaser", "node 7 event", funcDesc));
+            nodes.Add(new StoryNodeDataModel("node9", NodeTypeDataModel.satellite, "node 9 teaser", "node 9 event", funcDesc));
+            nodes.Add(new StoryNodeDataModel("node10", NodeTypeDataModel.satellite, "node 10 teaser", "node 10 event", funcDesc));
+
+            /////////////////////////////////////////////////////////////////////////////
+
+            StoryDataModel story = new StoryDataModel();//(elements, 5, nodes, nodes[1], initStoryState);
+            story.numTopScenesForUser = 5;
+            story.nodes = nodes;
+            story.startingNode = nodes[0];
+            story.initialStoryState = initStoryState;
+
+            return DataModelPersistence.WriteStoryToString(story);
         }
     }
 }

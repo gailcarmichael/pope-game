@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-namespace StoryEngineDataModel;
+namespace StoryEngine.StoryEngineDataModel;
 
-public struct StoryState
+public struct StoryStateDataModel
 {
     public Dictionary<string, float> elementValues;
     public Dictionary<string, float> elementDesires;

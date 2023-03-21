@@ -25,5 +25,8 @@ public partial class TestSprite : Sprite2D
 		GD.Print(storyEngine.CurrentNodeTeaserText());
 		GD.Print(storyEngine.CurrentNodeEventText());
 		GD.Print(storyEngine.CurrentNodeChoiceText(0));
+
+        GD.Print("\n\n");
+        GD.Print(StoryEngineAPI.GetTestStoryJSON());
 	}
 }
