@@ -4,6 +4,8 @@ using StoryEngine.StoryElements;
 using System.Collections.Generic;
 using System.Linq;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {
     internal class StoryNode
@@ -324,6 +326,40 @@ namespace StoryEngine.StoryNodes
         {
             _consumed = false;
             _selectedChoiceIndex = -1;
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static StoryNode InitializeFromDataModel(StoryNodeDataModel nodeModel)
+        {
+            NodeType newType = NodeType.satellite;
+            if (nodeModel.Type == NodeTypeDataModel.kernel) newType = NodeType.kernel;
+
+            FunctionalDescription? newFuncDesc = null;
+            if (nodeModel.FunctionalDescription is not null)
+            {
+                newFuncDesc = FunctionalDescription.InitializeFromDataModel(nodeModel.FunctionalDescription);
+            }
+
+            Prerequisite? newPreq = null;
+            if (nodeModel.Prerequisite is not null)
+            {
+                newPreq = Prerequisite.InitializeFromDataModel(nodeModel.Prerequisite);
+            }
+
+            return new StoryNode(
+                nodeModel.ID,
+                newType,
+                nodeModel.TeaserText,
+                //string teaserImage, //not currently using this
+                nodeModel.EventText,
+                newFuncDesc,
+                newPreq,
+                null, // List<Choice> ? choices = null, //TODO
+                nodeModel.LastNode
+            );
         }
     }
 }

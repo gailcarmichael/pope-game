@@ -11,16 +11,14 @@ public partial class TestSprite : Sprite2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		StoryEngineAPI storyEngine = new StoryEngineAPI("filename", "otherFilename");
-
-		// TODO: Directly accessing Story should not be allowed in the future; for now,
-		// it's just for testing until we find a better way to control access and print
-		// values generically from the library
+		StoryEngineAPI storyEngine = new StoryEngineAPI(
+			StoryEngineAPI.GetTestStoryJSON(),
+			"{}");
 
 		GD.Print("Story is valid: " + storyEngine.IsStoryValid());
 		
 		GD.Print("\n\n");
-		GD.Print(storyEngine.Story.ToString()); // TODO implement custom ToString
+		GD.Print(storyEngine.Story?.ToString()); // TODO implement custom ToString
 
 		GD.Print("\n\n");
 		GD.Print(storyEngine.CurrentNodeTeaserText());

@@ -4,12 +4,15 @@ using System;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryFundamentals;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {
     internal class FunctionalDescription
     {
         //@ElementMap(required = false, inline = true, entry = "prominence", key = "id", attribute = true)
         protected Dictionary<string, int> _elementProminences;
+        internal Dictionary<string, int> ElementProminences => _elementProminences;
 
         //@ElementList(required = false, inline = true) - note, changed to be strings instead of Tags
         protected List<string> _elementIDs;
@@ -281,6 +284,27 @@ namespace StoryEngine.StoryNodes
                     state.ResetDesireValue(id);
                 }
             }
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static FunctionalDescription InitializeFromDataModel(FunctionalDescriptionDataModel nodeModel)
+        {
+            FunctionalDescription newFuncDesc = new FunctionalDescription();
+
+            if (nodeModel.ElementProminences is not null)
+            {
+                newFuncDesc._elementProminences = new Dictionary<string, int>(nodeModel.ElementProminences);
+            }
+
+            if (nodeModel.TaggableElementIDs is not null)
+            {
+                newFuncDesc._elementIDs = new List<string>(nodeModel.TaggableElementIDs);
+            }
+
+            return newFuncDesc;
         }
         
     }

@@ -1,6 +1,8 @@
 using StoryEngine.StoryNodes;
 using StoryEngine.StoryElements;
 
+using StoryEngine.StoryEngineDataModel;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -397,9 +399,18 @@ namespace StoryEngine.StoryFundamentals
 
             return isValid;
         }
-            
-            
-            ///////////////////////////////////////////////////////////////
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static StoryState InitializeFromDataModel(StoryStateDataModel stateModel)
+        {
+            return new StoryState(
+                new Dictionary<string, float>(stateModel.ElementValues),
+                new Dictionary<string, float>(stateModel.ElementDesires),
+                new List<string>(stateModel.TagList));
+        }
 
     }
 }
