@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryFundamentals;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {
     // Each story node can have zero or one prerequisites. A
@@ -27,7 +29,7 @@ namespace StoryEngine.StoryNodes
             List<QuantifiableElementRequirement>? qRequirements = null,
             List<TagRequirement>? tagRequirements = null,
             List<SceneRequirement>? sceneRequirements = null,
-            string id = "")
+            string? id = "")
         {
             _quantifiableRequirements = new List<QuantifiableElementRequirement>();
             _tagRequirements = new List<TagRequirement>();
@@ -245,6 +247,34 @@ namespace StoryEngine.StoryNodes
 
                 return passes;
             }
+
+            internal static QuantifiableElementRequirement InitializeFromDataModel(QuantifiableElementRequirementDataModel model)
+            {
+                BinaryRestriction newOp;
+                switch (model.OperatorToApply)
+                {
+                    case (BinaryRestrictionDataModel.equal):
+                        newOp = BinaryRestriction.equal;
+                        break;
+                    case (BinaryRestrictionDataModel.greaterThan):
+                        newOp = BinaryRestriction.greaterThan;
+                        break;
+                    case (BinaryRestrictionDataModel.greaterThanOrEqual):
+                        newOp = BinaryRestriction.greaterThanOrEqual;
+                        break;
+                    case (BinaryRestrictionDataModel.lessThan):
+                        newOp = BinaryRestriction.lessThan;
+                        break;
+                    case (BinaryRestrictionDataModel.lessThanOrEqual):
+                        newOp = BinaryRestriction.lessThanOrEqual;
+                        break;
+                    default:
+                        newOp = BinaryRestriction.equal;
+                        break;
+                }
+
+                return new QuantifiableElementRequirement(model.ElementID, newOp, model.CompareTo);
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -274,6 +304,25 @@ namespace StoryEngine.StoryNodes
                             storyState.TaggedWithElement(_elementID) :
                             !storyState.TaggedWithElement(_elementID);
             }
+
+            internal static TagRequirement InitializeFromDataModel(TagRequirementDataModel model)
+            {
+                ListRestriction newOp;
+                switch (model.OperatorToApply)
+                {
+                    case (ListRestrictionDataModel.contains):
+                        newOp = ListRestriction.contains;
+                        break;
+                    case (ListRestrictionDataModel.doesNotContain):
+                        newOp = ListRestriction.doesNotContain;
+                        break;
+                    default:
+                        newOp = ListRestriction.contains;
+                        break;
+                }
+
+                return new TagRequirement(model.ElementID, newOp);
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -301,6 +350,69 @@ namespace StoryEngine.StoryNodes
                         storyState.HaveSeenScene(_sceneID) :
                         !storyState.HaveSeenScene(_sceneID);
             }
+
+            internal static SceneRequirement InitializeFromDataModel(SceneRequirementDataModel model)
+            {
+                SceneRestriction newOp;
+                switch (model.OperatorToApply)
+                {
+                    case (SceneRestrictionDataModel.seen):
+                        newOp = SceneRestriction.seen;
+                        break;
+                    case (SceneRestrictionDataModel.notSeen):
+                        newOp = SceneRestriction.notSeen;
+                        break;
+                    default:
+                        newOp = SceneRestriction.seen;
+                        break;
+                }
+
+                return new SceneRequirement(model.SceneID, newOp);
+            }
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static Prerequisite InitializeFromDataModel(PrerequisiteDataModel prereqModel)
+        {
+            List<QuantifiableElementRequirement>? newElementReqs = null;
+            if (prereqModel.QuantifiableRequirements is not null)
+            {
+                newElementReqs = new List<QuantifiableElementRequirement>();
+                foreach (QuantifiableElementRequirementDataModel r in prereqModel.QuantifiableRequirements)
+                {
+                    newElementReqs.Add(QuantifiableElementRequirement.InitializeFromDataModel(r));
+                }
+            }
+
+            List<TagRequirement>? newTagReqs = null;
+            if (prereqModel.TagRequirements is not null)
+            {
+                newTagReqs = new List<TagRequirement>();
+                foreach (TagRequirementDataModel r in prereqModel.TagRequirements)
+                {
+                    newTagReqs.Add(TagRequirement.InitializeFromDataModel(r));
+                }
+            }
+
+            List<SceneRequirement>? newSceneReqs = null;
+            if (prereqModel.SceneRequirements is not null)
+            {
+                newSceneReqs = new List<SceneRequirement>();
+                foreach (SceneRequirementDataModel r in prereqModel.SceneRequirements)
+                {
+                    newSceneReqs.Add(SceneRequirement.InitializeFromDataModel(r));
+                }
+            }
+
+            return new Prerequisite(
+                newElementReqs,
+                newTagReqs,
+                newSceneReqs,
+                prereqModel.id
+            );
         }
     }
 }

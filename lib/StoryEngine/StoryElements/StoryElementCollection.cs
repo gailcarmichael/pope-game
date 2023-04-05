@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryElements
 {
     internal class StoryElementCollection
@@ -133,6 +135,19 @@ namespace StoryEngine.StoryElements
             StoryElementCollection collection = new StoryElementCollection(new List<StoryElement>(_storyElements));
             
             return collection;
+        }
+        
+        /////////////////////////////////////////////////////////////
+
+        internal static StoryElementCollection InitializeFromDataModel(StoryElementCollectionDataModel elementColModel)
+        {
+            StoryElementCollection newElementCol = new StoryElementCollection();
+            foreach (StoryElementDataModel elementModel in elementColModel.StoryElements)
+            {
+                newElementCol.Add(StoryElement.InitializeFromDataModel(elementModel));
+            }
+
+            return newElementCol;
         }
     }
 }

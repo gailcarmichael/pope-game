@@ -1,3 +1,5 @@
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryElements
 {
 
@@ -55,6 +57,29 @@ namespace StoryEngine.StoryElements
         public override string ToString()
         {
             return "StoryElement with ID " + _id;
+        }
+    
+        /////////////////////////////////////////////////////////////
+
+        internal static StoryElement InitializeFromDataModel(StoryElementDataModel elementModel)
+        {
+            ElementType elementType;
+            switch (elementModel.Type)
+            {
+                case ElementTypeDataModel.quantifiable:
+                    elementType = ElementType.quantifiable;
+                    break;
+                case ElementTypeDataModel.quantifiableStoryStateOnly:
+                    elementType = ElementType.quantifiableStoryStateOnly;
+                    break;
+                case ElementTypeDataModel.taggable:
+                    elementType = ElementType.taggable;
+                    break;
+                default:
+                    elementType = ElementType.quantifiableStoryStateOnly;
+                    break;
+            }
+            return new StoryElement(elementModel.ID, elementModel.Category, elementModel.Name, elementType);
         }
     }
 }
