@@ -142,9 +142,12 @@ namespace StoryEngine.StoryElements
         internal static StoryElementCollection InitializeFromDataModel(StoryElementCollectionDataModel elementColModel)
         {
             StoryElementCollection newElementCol = new StoryElementCollection();
-            foreach (StoryElementDataModel elementModel in elementColModel.StoryElements)
+            if (elementColModel.StoryElements is not null)
             {
-                newElementCol.Add(StoryElement.InitializeFromDataModel(elementModel));
+                foreach (StoryElementDataModel elementModel in elementColModel.StoryElements)
+                {
+                    newElementCol.Add(StoryElement.InitializeFromDataModel(elementModel));
+                }
             }
 
             return newElementCol;

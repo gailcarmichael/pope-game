@@ -220,15 +220,25 @@ namespace StoryEngine
             return DataModelPersistence.WriteStoryToString(story);
         }
 
+        public static string SerializeStoryElementCollectionToJSON(StoryElementCollectionDataModel elementCol)
+        {
+            return DataModelPersistence.WriteStoryElementCollectionToString(elementCol);
+        }
+
+
         public static StoryDataModel? DeserializeStoryFromJSON(string json)
         {
             return DataModelPersistence.ReadStoryFromString(json);
         }
 
-        public static string GetTestStoryJSON()
+        public static StoryElementCollectionDataModel? DeserializeStoryElementCollectionFromJSON(string json)
         {
-            /////////////////////////////////////////////////////////////////////////////
+            return DataModelPersistence.ReadStoryElementCollectionFromString(json);
+        }
 
+
+        public static string GetTestStoryElementCollectionJSON()
+        {
             List<StoryElementDataModel> storyElements = new List<StoryElementDataModel>();
 
             storyElements.Add(new StoryElementDataModel("heroTheme", "themes", "heroism", ElementTypeDataModel.quantifiable));
@@ -247,6 +257,12 @@ namespace StoryEngine
 
             StoryElementCollectionDataModel elements = new StoryElementCollectionDataModel(storyElements);
 
+            return DataModelPersistence.WriteStoryElementCollectionToString(elements);
+        }
+
+
+        public static string GetTestStoryJSON()
+        {
             /////////////////////////////////////////////////////////////////////////////
 
             Dictionary<string, float> values = new Dictionary<string, float>();
