@@ -349,6 +349,15 @@ namespace StoryEngine.StoryNodes
                 newPreq = Prerequisite.InitializeFromDataModel(nodeModel.Prerequisite);
             }
 
+            List<Choice> choices = new List<Choice>();
+            if (nodeModel.Choices is not null)
+            {
+                foreach (ChoiceDataModel choiceModel in nodeModel.Choices)
+                {
+                    choices.Add(Choice.InitializeFromDataModel(choiceModel));
+                }
+            }
+
             return new StoryNode(
                 nodeModel.ID,
                 newType,
@@ -357,7 +366,7 @@ namespace StoryEngine.StoryNodes
                 nodeModel.EventText,
                 newFuncDesc,
                 newPreq,
-                null, // List<Choice> ? choices = null, //TODO
+                choices,
                 nodeModel.LastNode
             );
         }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryFundamentals;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {    
     // An outcome specifies what happens after a choice is made in 
@@ -158,6 +160,36 @@ namespace StoryEngine.StoryNodes
                 }
             }
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////
+
+
+        internal static Outcome InitializeFromDataModel(OutcomeDataModel model)
+        {
+            List<QuantifiableModifier> quantMods = new List<QuantifiableModifier>();
+            if (model.QuantifiableModifiers is not null)
+            {
+                foreach (QuantifiableModifierDataModel qm in model.QuantifiableModifiers)
+                {
+                    quantMods.Add(QuantifiableModifier.InitializeFromDataModel(qm));
+                }
+            }
+
+            List<TagModifier> tagMods = new List<TagModifier>();
+            if (model.TagModifiers is not null)
+            {
+                foreach (TagModifierDataModel tm in model.TagModifiers)
+                {
+                    tagMods.Add(TagModifier.InitializeFromDataModel(tm));
+                }
+            }
+
+            return new Outcome(
+                model.Text,
+                quantMods,
+                tagMods
+            );
+        }
         
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +215,11 @@ namespace StoryEngine.StoryNodes
                 _elementID = id;
                 _absolute = absolute;
                 _delta = delta;
+            }
+
+            internal static QuantifiableModifier InitializeFromDataModel(QuantifiableModifierDataModel model)
+            {
+                return new QuantifiableModifier(model.ElementID, model.Absolute, model.Delta);
             }
         }
 
@@ -216,6 +253,25 @@ namespace StoryEngine.StoryNodes
             {
                 _elementID = id;
                 _action = action;
+            }
+
+            internal static TagModifier InitializeFromDataModel(TagModifierDataModel model)
+            {
+                TagAction action;
+                switch (model.Action)
+                {
+                    case TagActionDataModel.add:
+                        action = TagAction.add;
+                        break;
+                    case TagActionDataModel.remove:
+                        action = TagAction.remove;
+                        break;
+                    default:
+                        action = TagAction.add;
+                        break;
+                }
+
+                return new TagModifier(model.ElementID, action);
             }
         }
     }

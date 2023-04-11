@@ -1,5 +1,7 @@
 using StoryEngine.StoryElements;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {
     internal class Choice
@@ -37,6 +39,18 @@ namespace StoryEngine.StoryNodes
             }
             
             return isValid;
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static Choice InitializeFromDataModel(ChoiceDataModel choiceModel)
+        {
+            return new Choice(
+                choiceModel.Text,
+                Outcome.InitializeFromDataModel(choiceModel.Outcome)
+            );
         }
     }
 }
