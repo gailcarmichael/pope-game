@@ -152,5 +152,19 @@ namespace StoryEngine.StoryElements
 
             return newElementCol;
         }
+
+        internal StoryElementCollectionDataModel DataModel()
+        {
+            List <StoryElementDataModel> newElementList = new List<StoryElementDataModel>();
+            if (_storyElements is not null)
+            {
+                foreach (StoryElement elementModel in _storyElements)
+                {
+                    newElementList.Add(elementModel.DataModel());
+                }
+            }
+
+            return new StoryElementCollectionDataModel(newElementList);
+        }
     }
 }

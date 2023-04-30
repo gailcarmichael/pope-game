@@ -81,5 +81,26 @@ namespace StoryEngine.StoryElements
             }
             return new StoryElement(elementModel.ID, elementModel.Category, elementModel.Name, elementType);
         }
+
+        internal StoryElementDataModel DataModel()
+        {
+            ElementTypeDataModel elementType;
+            switch (Type)
+            {
+                case ElementType.quantifiable:
+                    elementType = ElementTypeDataModel.quantifiable;
+                    break;
+                case ElementType.quantifiableStoryStateOnly:
+                    elementType = ElementTypeDataModel.quantifiableStoryStateOnly;
+                    break;
+                case ElementType.taggable:
+                    elementType = ElementTypeDataModel.taggable;
+                    break;
+                default:
+                    elementType = ElementTypeDataModel.quantifiableStoryStateOnly;
+                    break;
+            }
+            return new StoryElementDataModel(ID, Category, Name, elementType);
+        }
     }
 }

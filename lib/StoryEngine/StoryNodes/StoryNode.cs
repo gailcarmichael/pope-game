@@ -6,6 +6,8 @@ using System.Linq;
 
 using StoryEngine.StoryEngineDataModel;
 
+//TODO: need a way to represent dialog between characters
+
 namespace StoryEngine.StoryNodes
 {
     internal class StoryNode
@@ -369,6 +371,29 @@ namespace StoryEngine.StoryNodes
                 choices,
                 nodeModel.LastNode
             );
+        }
+
+        internal StoryNodeDataModel DataModel()
+        {
+            NodeTypeDataModel newType = NodeTypeDataModel.satellite;
+            if (_type == NodeType.kernel) newType = NodeTypeDataModel.kernel;
+
+            List<ChoiceDataModel>? choices = null;
+            if (_choices is not null)
+            {
+                choices = new List<ChoiceDataModel>();
+                foreach (Choice c in _choices)
+                {
+                    choices.Add(c.DataModel());
+                }
+            }
+
+            return new StoryNodeDataModel(_id, newType, _teaserText, _eventText, _isLastNode)
+            {
+                FunctionalDescription = _functionalDesc?.DataModel() ??  null,
+                Prerequisite = _prerequisite?.DataModel() ?? null,
+                Choices = choices
+            };
         }
     }
 }

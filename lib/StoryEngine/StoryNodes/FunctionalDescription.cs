@@ -306,6 +306,27 @@ namespace StoryEngine.StoryNodes
 
             return newFuncDesc;
         }
+
+        internal FunctionalDescriptionDataModel DataModel()
+        {
+            Dictionary<string, int>? newElementProminences = null;
+            if (_elementProminences is not null)
+            {
+                newElementProminences = new Dictionary<string, int>(_elementProminences);
+            }
+
+            List<string>? newTaggableElements = null;
+            if (_elementIDs is not null)
+            {
+                newTaggableElements = new List<string>(_elementIDs);
+            }
+
+            return new FunctionalDescriptionDataModel()
+            {
+                ElementProminences = newElementProminences,
+                TaggableElementIDs = newTaggableElements
+            };
+        }
         
     }
 }

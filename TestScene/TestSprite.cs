@@ -32,6 +32,8 @@ public partial class TestSprite : Sprite2D
         GD.Print("Story JSON:\n");
 		GD.Print(story_json);
 		StoryDataModel? story = StoryEngineAPI.DeserializeStoryFromJSON(story_json);
+		
+
 		//TODO: check story round trip
         
 		GD.Print("\n\n");

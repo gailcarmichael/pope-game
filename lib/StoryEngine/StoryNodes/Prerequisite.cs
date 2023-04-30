@@ -275,6 +275,34 @@ namespace StoryEngine.StoryNodes
 
                 return new QuantifiableElementRequirement(model.ElementID, newOp, model.CompareTo);
             }
+
+            internal QuantifiableElementRequirementDataModel DataModel()
+            {
+                BinaryRestrictionDataModel newOp;
+                switch (_operator)
+                {
+                    case (BinaryRestriction.equal):
+                        newOp = BinaryRestrictionDataModel.equal;
+                        break;
+                    case (BinaryRestriction.greaterThan):
+                        newOp = BinaryRestrictionDataModel.greaterThan;
+                        break;
+                    case (BinaryRestriction.greaterThanOrEqual):
+                        newOp = BinaryRestrictionDataModel.greaterThanOrEqual;
+                        break;
+                    case (BinaryRestriction.lessThan):
+                        newOp = BinaryRestrictionDataModel.lessThan;
+                        break;
+                    case (BinaryRestriction.lessThanOrEqual):
+                        newOp = BinaryRestrictionDataModel.lessThanOrEqual;
+                        break;
+                    default:
+                        newOp = BinaryRestrictionDataModel.equal;
+                        break;
+                }
+
+                return new QuantifiableElementRequirementDataModel(_elementID, newOp, _compareTo);
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -323,6 +351,25 @@ namespace StoryEngine.StoryNodes
 
                 return new TagRequirement(model.ElementID, newOp);
             }
+
+            internal TagRequirementDataModel DataModel()
+            {
+                ListRestrictionDataModel newOp;
+                switch (_operator)
+                {
+                    case (ListRestriction.contains):
+                        newOp = ListRestrictionDataModel.contains;
+                        break;
+                    case (ListRestriction.doesNotContain):
+                        newOp = ListRestrictionDataModel.doesNotContain;
+                        break;
+                    default:
+                        newOp = ListRestrictionDataModel.contains;
+                        break;
+                }
+
+                return new TagRequirementDataModel(_elementID, newOp);
+            }
         }
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -369,6 +416,25 @@ namespace StoryEngine.StoryNodes
 
                 return new SceneRequirement(model.SceneID, newOp);
             }
+
+            internal SceneRequirementDataModel DataModel()
+            {
+                SceneRestrictionDataModel newOp;
+                switch (_operator)
+                {
+                    case (SceneRestriction.seen):
+                        newOp = SceneRestrictionDataModel.seen;
+                        break;
+                    case (SceneRestriction.notSeen):
+                        newOp = SceneRestrictionDataModel.notSeen;
+                        break;
+                    default:
+                        newOp = SceneRestrictionDataModel.seen;
+                        break;
+                }
+
+                return new SceneRequirementDataModel(_sceneID, newOp);
+            }
         }
 
 
@@ -413,6 +479,46 @@ namespace StoryEngine.StoryNodes
                 newSceneReqs,
                 prereqModel.id
             );
+        }
+
+        internal PrerequisiteDataModel DataModel()
+        {
+            List<QuantifiableElementRequirementDataModel>? quantReqs = null;
+            if (_quantifiableRequirements is not null)
+            {
+                quantReqs = new List<QuantifiableElementRequirementDataModel>();
+                foreach (QuantifiableElementRequirement req in _quantifiableRequirements)
+                {
+                    quantReqs.Add(req.DataModel());
+                }
+            }
+
+            List<TagRequirementDataModel>? tagReqs = null;
+            if (_tagRequirements is not null)
+            {
+                tagReqs = new List<TagRequirementDataModel>();
+                foreach (TagRequirement req in _tagRequirements)
+                {
+                    tagReqs.Add(req.DataModel());
+                }
+            }
+
+            List<SceneRequirementDataModel>? sceneReqs = null;
+            if (_sceneRequirements is not null)
+            {
+                sceneReqs = new List<SceneRequirementDataModel>();
+                foreach (SceneRequirement req in _sceneRequirements)
+                {
+                    sceneReqs.Add(req.DataModel());
+                }
+            }
+
+            return new PrerequisiteDataModel()
+            {
+                QuantifiableRequirements = quantReqs,
+                TagRequirements = tagReqs,
+                SceneRequirements = sceneReqs
+            };
         }
     }
 }

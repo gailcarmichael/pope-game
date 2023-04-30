@@ -11,15 +11,15 @@ namespace StoryEngine.StoryNodes
         internal string? Text => _text;
         
         // @Element(name="outcome")
-        protected Outcome? _outcome;
-        internal Outcome? Outcome {
+        protected Outcome _outcome;
+        internal Outcome Outcome {
             get => _outcome;
             set => _outcome = value; }
         
               
         internal Choice(
-            string? text = null,
-            Outcome? outcome = null)
+            Outcome outcome,
+            string? text = null)
         {
             _text = text;
             _outcome = outcome;
@@ -48,9 +48,17 @@ namespace StoryEngine.StoryNodes
         internal static Choice InitializeFromDataModel(ChoiceDataModel choiceModel)
         {
             return new Choice(
-                choiceModel.Text,
-                Outcome.InitializeFromDataModel(choiceModel.Outcome)
+                Outcome.InitializeFromDataModel(choiceModel.Outcome),
+                choiceModel.Text
             );
+        }
+
+        internal ChoiceDataModel DataModel()
+        {
+            return new ChoiceDataModel(_outcome.DataModel())
+            {
+                Text = _text
+            };
         }
     }
 }

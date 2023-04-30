@@ -411,5 +411,21 @@ namespace StoryEngine.StoryFundamentals
                 newStartingNode,
                 StoryState.InitializeFromDataModel(storyModel.InitialStoryState));
         }
+
+        internal StoryDataModel DataModel()
+        {
+            List<StoryNodeDataModel> nodeDataModelList = new List<StoryNodeDataModel>();
+            foreach (StoryNode node in _nodes)
+            {
+                nodeDataModelList.Add(node.DataModel());
+            }
+
+            return new StoryDataModel(_numTopScenesForUser, nodeDataModelList, _initialStoryState.DataModel());
+        }
+
+        internal StoryElementCollectionDataModel ElementCollectionDataModel()
+        {
+            return _elementCol.DataModel();
+        }
     }
 }

@@ -45,6 +45,14 @@ namespace StoryEngine
         }
 
         public bool IsStoryValid() => Story?.IsValid() ?? false;
+
+        public string StoryJSON()
+        {
+            if (_story is not null)
+                return StoryEngineAPI.SerializeStoryToJSON(_story.DataModel());
+            else
+                return "";
+        }
          
         ///////////////////////
 
@@ -236,6 +244,7 @@ namespace StoryEngine
             return DataModelPersistence.ReadStoryElementCollectionFromString(json);
         }
 
+        /////////////////////////////////////////////////////////////////////////////
 
         public static string GetTestStoryElementCollectionJSON()
         {

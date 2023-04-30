@@ -190,6 +190,35 @@ namespace StoryEngine.StoryNodes
                 tagMods
             );
         }
+
+        internal OutcomeDataModel DataModel()
+        {
+            List<QuantifiableModifierDataModel>? quantList = null;
+            if (_quantifiableModifiers is not null)
+            {
+                quantList = new List<QuantifiableModifierDataModel>();
+                foreach(QuantifiableModifier modifier in _quantifiableModifiers)
+                {
+                    quantList.Add(modifier.DataModel());
+                }
+            }
+
+            List<TagModifierDataModel>? tagList = null;
+            if (_quantifiableModifiers is not null)
+            {
+                tagList = new List<TagModifierDataModel>();
+                foreach (TagModifier modifier in _taggableModifiers)
+                {
+                    tagList.Add(modifier.DataModel());
+                }
+            }
+
+            return new OutcomeDataModel(_outcomeText ?? "")
+            {
+                QuantifiableModifiers = quantList,
+                TagModifiers = tagList
+            };
+        }
         
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -220,6 +249,11 @@ namespace StoryEngine.StoryNodes
             internal static QuantifiableModifier InitializeFromDataModel(QuantifiableModifierDataModel model)
             {
                 return new QuantifiableModifier(model.ElementID, model.Absolute, model.Delta);
+            }
+
+            internal QuantifiableModifierDataModel DataModel()
+            {
+                return new QuantifiableModifierDataModel(_elementID, _absolute, _delta);
             }
         }
 
@@ -272,6 +306,25 @@ namespace StoryEngine.StoryNodes
                 }
 
                 return new TagModifier(model.ElementID, action);
+            }
+
+            internal TagModifierDataModel DataModel()
+            {
+                TagActionDataModel action;
+                switch (Action)
+                {
+                    case TagAction.add:
+                        action = TagActionDataModel.add;
+                        break;
+                    case TagAction.remove:
+                        action = TagActionDataModel.remove;
+                        break;
+                    default:
+                        action = TagActionDataModel.add;
+                        break;
+                }
+
+                return new TagModifierDataModel(_elementID, action);
             }
         }
     }

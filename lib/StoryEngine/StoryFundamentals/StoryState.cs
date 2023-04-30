@@ -412,5 +412,13 @@ namespace StoryEngine.StoryFundamentals
                 new List<string>(stateModel.TagList));
         }
 
+        internal StoryStateDataModel DataModel()
+        {
+            return new StoryStateDataModel(
+                new Dictionary<string, float>(_elementValues),
+                new Dictionary<string, float>(_elementDesires),
+                new List<string>(_tagList));
+        }
+
     }
 }
