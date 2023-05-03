@@ -17,6 +17,13 @@ namespace StoryEngine
 
         private bool _showingOutcomeText;
 
+        private static IStoryEngineLogger? _logger = null;
+        public static IStoryEngineLogger? Logger
+        {
+            get => _logger;
+            set => _logger = value;
+        }
+
 
         public StoryEngineAPI(string storyJSON, string elementCollectionJSON)
         {
@@ -50,6 +57,14 @@ namespace StoryEngine
         {
             if (_story is not null)
                 return StoryEngineAPI.SerializeStoryToJSON(_story.DataModel());
+            else
+                return "";
+        }
+
+        public string StoryElementCollectionJSON()
+        {
+            if (_story is not null)
+                return StoryEngineAPI.SerializeStoryElementCollectionToJSON(_story.ElementCollection.DataModel());
             else
                 return "";
         }
@@ -106,7 +121,7 @@ namespace StoryEngine
         {
             if (index < 0 || index >= _currentSatellites.Count)
             {
-                System.Console.WriteLine("Game failed to consume satellite because " + index + " is not a valid index");
+                StoryEngineAPI.Logger?.Write("Game failed to consume satellite because " + index + " is not a valid index");
             }
             else
             {
@@ -216,8 +231,6 @@ namespace StoryEngine
 
             RefreshCurrentSatellites();
         }
-
-        ///////////////////////
 
         /////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////

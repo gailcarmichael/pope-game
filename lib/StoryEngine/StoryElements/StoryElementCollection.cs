@@ -37,7 +37,7 @@ namespace StoryEngine.StoryElements
         {
             foreach (StoryElement e in _storyElements)
             {
-                System.Console.WriteLine(e);
+                StoryEngineAPI.Logger?.Write(e);
             }
         }
         
@@ -69,7 +69,7 @@ namespace StoryEngine.StoryElements
             {
                 if (ids.Contains(el.ID))
                 {
-                    System.Console.WriteLine("IDs found duplicate story element id: " + el.ID);
+                    StoryEngineAPI.Logger?.Write("IDs found duplicate story element id: " + el.ID);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace StoryEngine.StoryElements
             {
                 if (ids.Contains(el.ID))
                 {
-                    System.Console.WriteLine("DesireValueIDs found duplicate story element id: " + el.ID);
+                    StoryEngineAPI.Logger?.Write("DesireValueIDs found duplicate story element id: " + el.ID);
                 }
                 else if (el.HasDesireValue())
                 {
@@ -121,7 +121,7 @@ namespace StoryEngine.StoryElements
             }
             else
             {
-                System.Console.WriteLine("Could not add element with id " + e.ID +
+                StoryEngineAPI.Logger?.Write("Could not add element with id " + e.ID +
                                          " to collection because it already exists.");
             }
             

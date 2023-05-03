@@ -74,14 +74,15 @@ namespace StoryEngine.StoryNodes
                 StoryElement? elementWithID = elements.ElementWithID(req.ElementID);
                 if (elementWithID == null)
                 {
-                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                    StoryEngineAPI.Logger?.Write(req.ElementID);
+                    StoryEngineAPI.Logger?.Write("Prerequisite is not valid because element" +
                             " with id " + req.ElementID + "  is not part of the element collection.");
                     isValid = false;
                 }
                 else if (elementWithID.Type != ElementType.quantifiable &&
                         elementWithID.Type != ElementType.quantifiableStoryStateOnly)
                 {
-                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                    StoryEngineAPI.Logger?.Write("Prerequisite is not valid because element" +
                             " with id " + req.ElementID + "  has type " +
                             elementWithID.Type);
                     isValid = false;
@@ -94,13 +95,13 @@ namespace StoryEngine.StoryNodes
 
                 if (elementWithID == null)
                 {
-                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                    StoryEngineAPI.Logger?.Write("Prerequisite is not valid because element" +
                             " with id " + req.ElementID + "  is not part of the element collection.");
                     isValid = false;
                 }
                 else if (elementWithID.Type != ElementType.taggable)
                 {
-                    System.Console.WriteLine("Prerequisite is not valid because element" +
+                    StoryEngineAPI.Logger?.Write("Prerequisite is not valid because element" +
                             " with id " + req.ElementID + "  has type " +
                             elementWithID.Type);
                     isValid = false;
@@ -207,7 +208,7 @@ namespace StoryEngine.StoryNodes
                 BinaryRestriction op,
                 int compareTo)
             {
-                _elementID = "";
+                _elementID = id;
                 
                 _operator = op;
                 _compareTo = compareTo;
@@ -273,6 +274,7 @@ namespace StoryEngine.StoryNodes
                         break;
                 }
 
+                
                 return new QuantifiableElementRequirement(model.ElementID, newOp, model.CompareTo);
             }
 
@@ -449,6 +451,7 @@ namespace StoryEngine.StoryNodes
                 newElementReqs = new List<QuantifiableElementRequirement>();
                 foreach (QuantifiableElementRequirementDataModel r in prereqModel.QuantifiableRequirements)
                 {
+                    StoryEngineAPI.Logger?.Write(r.ElementID);
                     newElementReqs.Add(QuantifiableElementRequirement.InitializeFromDataModel(r));
                 }
             }
@@ -484,7 +487,7 @@ namespace StoryEngine.StoryNodes
         internal PrerequisiteDataModel DataModel()
         {
             List<QuantifiableElementRequirementDataModel>? quantReqs = null;
-            if (_quantifiableRequirements is not null)
+            if (_quantifiableRequirements is not null && _quantifiableRequirements.Count > 0)
             {
                 quantReqs = new List<QuantifiableElementRequirementDataModel>();
                 foreach (QuantifiableElementRequirement req in _quantifiableRequirements)
@@ -494,7 +497,7 @@ namespace StoryEngine.StoryNodes
             }
 
             List<TagRequirementDataModel>? tagReqs = null;
-            if (_tagRequirements is not null)
+            if (_tagRequirements is not null && _tagRequirements.Count > 0)
             {
                 tagReqs = new List<TagRequirementDataModel>();
                 foreach (TagRequirement req in _tagRequirements)
@@ -504,7 +507,7 @@ namespace StoryEngine.StoryNodes
             }
 
             List<SceneRequirementDataModel>? sceneReqs = null;
-            if (_sceneRequirements is not null)
+            if (_sceneRequirements is not null && _sceneRequirements.Count > 0)
             {
                 sceneReqs = new List<SceneRequirementDataModel>();
                 foreach (SceneRequirement req in _sceneRequirements)

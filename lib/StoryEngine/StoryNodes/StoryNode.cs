@@ -379,7 +379,7 @@ namespace StoryEngine.StoryNodes
             if (_type == NodeType.kernel) newType = NodeTypeDataModel.kernel;
 
             List<ChoiceDataModel>? choices = null;
-            if (_choices is not null)
+            if (_choices is not null && _choices.Any())
             {
                 choices = new List<ChoiceDataModel>();
                 foreach (Choice c in _choices)

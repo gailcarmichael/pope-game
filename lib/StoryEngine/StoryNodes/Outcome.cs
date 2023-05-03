@@ -81,14 +81,14 @@ namespace StoryEngine.StoryNodes
                     StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
                     if (elementWithID == null)
                     {
-                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Quantifiable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (elementWithID.Type != ElementType.quantifiable &&
                              elementWithID.Type != ElementType.quantifiableStoryStateOnly)
                     {
-                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Quantifiable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  has type " +
                                 elementWithID.Type);
                         isValid = false;
@@ -105,13 +105,13 @@ namespace StoryEngine.StoryNodes
                     StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
                     if (elementWithID == null)
                     {
-                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Taggable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (elementWithID.Type != ElementType.taggable)
                     {
-                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Taggable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  has type " +
                                 elementWithID.Type);
                         isValid = false;
@@ -194,7 +194,7 @@ namespace StoryEngine.StoryNodes
         internal OutcomeDataModel DataModel()
         {
             List<QuantifiableModifierDataModel>? quantList = null;
-            if (_quantifiableModifiers is not null)
+            if (_quantifiableModifiers is not null && _quantifiableModifiers.Count > 0)
             {
                 quantList = new List<QuantifiableModifierDataModel>();
                 foreach(QuantifiableModifier modifier in _quantifiableModifiers)
@@ -204,7 +204,7 @@ namespace StoryEngine.StoryNodes
             }
 
             List<TagModifierDataModel>? tagList = null;
-            if (_quantifiableModifiers is not null)
+            if (_quantifiableModifiers is not null && _quantifiableModifiers.Count > 0)
             {
                 tagList = new List<TagModifierDataModel>();
                 foreach (TagModifier modifier in _taggableModifiers)

@@ -239,7 +239,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("Could not apply outcome or adjust quantifiable values because " +
+                StoryEngineAPI.Logger?.Write("Could not apply outcome or adjust quantifiable values because " +
                                          "node being consumed is null.");
             }
         }
@@ -315,7 +315,7 @@ namespace StoryEngine.StoryFundamentals
 
             if (_elementCol == null)
             {
-                System.Console.WriteLine("Story could not return current scene options because the story"
+                StoryEngineAPI.Logger?.Write("Story could not return current scene options because the story"
                         + " element collection is not available.");
             }
             else

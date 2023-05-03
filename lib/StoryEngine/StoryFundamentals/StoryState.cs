@@ -146,7 +146,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("StoryState has no quantifiable element with id " + id);
+                StoryEngineAPI.Logger?.Write("StoryState has no quantifiable element with id " + id);
                 return -1;
             }
         }
@@ -164,7 +164,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("StoryState has no quantifiable element with id " + id);
+                StoryEngineAPI.Logger?.Write("StoryState has no quantifiable element with id " + id);
             }
         }
 
@@ -183,7 +183,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("StoryState has no taggable element with id " + id);
+                StoryEngineAPI.Logger?.Write("StoryState has no taggable element with id " + id);
             }
         }
 
@@ -279,7 +279,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("StoryState could not reset desire value for " + id);
+                StoryEngineAPI.Logger?.Write("StoryState could not reset desire value for " + id);
             }
         }
 
@@ -323,7 +323,7 @@ namespace StoryEngine.StoryFundamentals
                     memFunc.DoTimeStepNotFeaturingElement();
                 }
 
-                System.Console.WriteLine("Node " + node.ID + " - " + id + " -> " + memFunc.LastValue());
+                StoryEngineAPI.Logger?.Write("Node " + node.ID + " - " + id + " -> " + memFunc.LastValue());
             }
         }
             
@@ -375,7 +375,7 @@ namespace StoryEngine.StoryFundamentals
                 if (!thisElementValid)
                 {
                     string type = e == null ? "null type" : e.Type.ToString();
-                    System.Console.WriteLine("StoryState is not valid; element with id " + id
+                    StoryEngineAPI.Logger?.Write("StoryState is not valid; element with id " + id
                             + " and type " + type + " is not in the right place");
                     isValid = false;
                 }
@@ -389,7 +389,7 @@ namespace StoryEngine.StoryFundamentals
                     StoryElement? e = elements.ElementWithID(id);
                     if (e != null && e.Type != ElementType.taggable)
                     {
-                        System.Console.WriteLine("StoryState is not valid; element with id " + id
+                        StoryEngineAPI.Logger?.Write("StoryState is not valid; element with id " + id
                                 + " should be taggable, but has type " + e.Type);
                         isValid = false;
                     }
