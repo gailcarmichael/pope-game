@@ -29,7 +29,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("Invalid index for obtaining a value from the memory function.");
+                StoryEngineAPI.Logger?.Write("Invalid index for obtaining a value from the memory function.");
             }
 
             return lastValue;

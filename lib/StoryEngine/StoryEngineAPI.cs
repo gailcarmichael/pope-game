@@ -10,36 +10,76 @@ namespace StoryEngine
 {
     public partial class StoryEngineAPI
     {
-        private Story _story;
-        internal Story Story => _story;
+        private Story? _story;
+        internal Story? Story => _story;
 
         private List<StoryNode> _currentSatellites;
 
         private bool _showingOutcomeText;
 
-        public StoryEngineAPI(string storyFilename, string elementCollectionFilename)
+        private static IStoryEngineLogger? _logger = null;
+        public static IStoryEngineLogger? Logger
         {
-            // TODO: use the story and element collection filenames to load story info from those files
-            // (in the meantime, we will have some test stories set up in this file)
+            get => _logger;
+            set => _logger = value;
+        }
 
-            _story = GetTestStory1();
+
+        public StoryEngineAPI(string storyJSON, string elementCollectionJSON)
+        {
+            _story = null;
+            StoryDataModel? storyModel = DataModelPersistence.ReadStoryFromString(storyJSON);
+            if (storyModel is not null)
+            {
+                StoryElementCollectionDataModel? elementColModel = DataModelPersistence.ReadStoryElementCollectionFromString(elementCollectionJSON);
+                if (elementColModel is not null)
+                {
+                    _story = Story.InitializeFromDataModel(storyModel, elementColModel);
+
+                }
+                else
+                {
+                    // TODO: figure out how exceptions work in a C# library used in Godot
+                }
+            }
+            else
+            {
+                // TODO: figure out how exceptions work in a C# library used in Godot
+            }
 
             _currentSatellites = new List<StoryNode>();
             RefreshCurrentSatellites();
         }
 
-        public bool IsStoryValid() => Story.IsValid();
-        
+        public bool IsStoryValid() => Story?.IsValid() ?? false;
+
+        public string StoryJSON()
+        {
+            if (_story is not null)
+                return StoryEngineAPI.SerializeStoryToJSON(_story.DataModel());
+            else
+                return "";
+        }
+
+        public string StoryElementCollectionJSON()
+        {
+            if (_story is not null)
+                return StoryEngineAPI.SerializeStoryElementCollectionToJSON(_story.ElementCollection.DataModel());
+            else
+                return "";
+        }
+         
         ///////////////////////
 
         private void RefreshCurrentSatellites()
         {
-            _currentSatellites = _story.CurrentSceneOptions(true); // don't include top kernel
+            var currentOptions = _story?.CurrentSceneOptions(true);
+            if (currentOptions is not null) _currentSatellites = currentOptions; // don't include top kernel
         }
 
         public int GetNumSatellitesToShow()
         {
-            return _story.NumTopScenesForUser;
+            return _story?.NumTopScenesForUser ?? 0;
         }
 
         public List<string> SatellitesTeaserText()
@@ -81,11 +121,11 @@ namespace StoryEngine
         {
             if (index < 0 || index >= _currentSatellites.Count)
             {
-                System.Console.WriteLine("Game failed to consume satellite because " + index + " is not a valid index");
+                StoryEngineAPI.Logger?.Write("Game failed to consume satellite because " + index + " is not a valid index");
             }
             else
             {
-                _story.StartConsumingNode(_currentSatellites[index]);
+                _story?.StartConsumingNode(_currentSatellites[index]);
             }
         }
 
@@ -93,18 +133,19 @@ namespace StoryEngine
 
         public bool IsDisplayingScene()
         {
+            if (_story is null) return false;
             return _story.NodeBeingConsumed() != null;
         }
         
         public string CurrentNodeTeaserText()
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             return node != null ? node.TeaserText : "";
         }
 
         public string CurrentNodeEventText()
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             return node != null ? node.EventText : "";
         }
 
@@ -112,19 +153,19 @@ namespace StoryEngine
 
         public int CurrentNodeNumChoices()
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             return node != null ? node.NumChoices() : 0;
         }
 
         public List<string> CurrentNodeChoicesTexts()
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             return node != null ? node.TextsForAllChoices() : new List<string>();
         }
 
         public string CurrentNodeChoiceText(int choiceIndex)
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             string? text = node != null ? node.TextForChoice(choiceIndex) : "";
             return text ?? "";
         }
@@ -133,7 +174,7 @@ namespace StoryEngine
         {
             if (IsDisplayingScene())
             {
-                StoryNode? node = _story.NodeBeingConsumed();
+                StoryNode? node = _story?.NodeBeingConsumed();
                 if (node != null) node.SetSelectedChoice(index);
             }
         }
@@ -163,7 +204,7 @@ namespace StoryEngine
 
         public bool CurrentNodeHasOutcomeToShow()
         {
-            StoryNode? node = _story.NodeBeingConsumed();
+            StoryNode? node = _story?.NodeBeingConsumed();
             if (node == null)
             {
                 return false;
@@ -183,111 +224,13 @@ namespace StoryEngine
         {
             _showingOutcomeText = false;
 
-            if (_story.NodeBeingConsumed() == null) return;
+            if (_story?.NodeBeingConsumed() == null) return;
 
             _story.ApplyOutcomeAndAdjustQuantifiableValues();
             _story.FinishConsumingNode();
 
             RefreshCurrentSatellites();
         }
-
-        ///////////////////////
-
-
-        /////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////
-
-        // TODO: find a better place for these test stories eventually
-
-        private static Story GetTestStory1()
-        {
-            /////////////////////////////////////////////////////////////////////////////
-
-            StoryElementCollection elements = new StoryElementCollection();
-
-            elements.Add(new StoryElement("heroTheme", "themes", "heroism", ElementType.quantifiable));
-            elements.Add(new StoryElement("friendshipTheme", "themes", "friendship", ElementType.quantifiable));
-
-            elements.Add(new StoryElement("dawgCharacter", "characters", "dawg", ElementType.quantifiable));
-            elements.Add(new StoryElement("kittyCharacter", "characters", "kitty", ElementType.quantifiable));
-
-            elements.Add(new StoryElement("tension", "tension", "tension", ElementType.quantifiableStoryStateOnly));
-
-            elements.Add(new StoryElement("openWaterTerrain", "terrains", "openWater", ElementType.taggable));
-            elements.Add(new StoryElement("mountainTerrain", "terrains", "mountains", ElementType.taggable));
-
-            elements.Add(new StoryElement("sunnyWeather", "weather", "sunny", ElementType.taggable));
-            elements.Add(new StoryElement("rainyWeather", "weather", "rainy", ElementType.taggable));
-
-            /////////////////////////////////////////////////////////////////////////////
-
-            Dictionary<string, float> values = new Dictionary<string, float>();
-            values["tension"] = 3.0f;
-
-            Dictionary<string, float> desires = new Dictionary<string, float>();
-            desires["heroTheme"] = 1.0f;
-            desires["friendshipTheme"] = 1.0f;
-            desires["dawgCharacter"] = 1.0f;
-            desires["kittyCharacter"] = 1.0f;
-
-            StoryState initStoryState = new StoryState(values, desires, new List<string>());
-
-            /////////////////////////////////////////////////////////////////////////////
-
-            Outcome o = new Outcome("outcome text");
-            o.Add(new Outcome.QuantifiableModifier("dawgCharacter", false, -1));
-            o.Add(new Outcome.TagModifier("sunnyWeather", Outcome.TagAction.add));
-
-            List<Choice> choices = new List<Choice>();
-            Choice c1 = new Choice("choice text");
-            c1.Outcome = o;
-            choices.Add(c1);
-
-            FunctionalDescription funcDesc = new FunctionalDescription();
-            funcDesc.Add(elements, "dawgCharacter", 3);
-            funcDesc.Add(elements, "sunnyWeather");
-
-            Prerequisite prereq = new Prerequisite();
-
-            prereq.Add(new Prerequisite.QuantifiableElementRequirement(
-                    "kittyCharacter", Prerequisite.BinaryRestriction.greaterThan, 4));
-
-            prereq.Add(new Prerequisite.TagRequirement(
-                    "rainyWeather", Prerequisite.ListRestriction.contains));
-
-            prereq.Add(new Prerequisite.SceneRequirement(
-                    "FirstScene", Prerequisite.SceneRestriction.notSeen));
-
-
-            List<StoryNode> nodes = new List<StoryNode>();
-
-            nodes.Add(new StoryNode("node1", NodeType.kernel, "node 1 teaser", "node 1 event"));
-
-            prereq = new Prerequisite();
-            prereq.Add(new Prerequisite.SceneRequirement("node1", Prerequisite.SceneRestriction.seen));
-            nodes.Add(new StoryNode("node2", NodeType.kernel, "node 2 teaser", "node 2 event", funcDesc, prereq, choices));
-
-            prereq = new Prerequisite();
-            prereq.Add(new Prerequisite.SceneRequirement("node2", Prerequisite.SceneRestriction.seen));
-            nodes.Add(new StoryNode("node3", NodeType.kernel, "node 3 teaser", "node 3 event", funcDesc, prereq, choices));
-
-            nodes.Add(new StoryNode("node4", NodeType.satellite, "node 4 teaser", "node 4 event", funcDesc, prereq));
-            nodes.Add(new StoryNode("node5", NodeType.satellite, "node 5 teaser", "node 5 event", funcDesc));
-            nodes.Add(new StoryNode("node6", NodeType.satellite, "node 6 teaser", "node 6 event", funcDesc));
-            nodes.Add(new StoryNode("node7", NodeType.satellite, "node 7 teaser", "node 7 event", funcDesc));
-            nodes.Add(new StoryNode("node8", NodeType.satellite, "node 8 teaser", "node 7 event", funcDesc));
-            nodes.Add(new StoryNode("node9", NodeType.satellite, "node 9 teaser", "node 9 event", funcDesc));
-            nodes.Add(new StoryNode("node10", NodeType.satellite, "node 10 teaser", "node 10 event", funcDesc));
-
-            /////////////////////////////////////////////////////////////////////////////
-
-            Story story = new Story(elements, 5, nodes, nodes[1], initStoryState);
-
-            System.Console.WriteLine("Test story is valid: " + story.IsValid());
-
-            return story;
-        }
-
 
         /////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////
@@ -298,15 +241,26 @@ namespace StoryEngine
             return DataModelPersistence.WriteStoryToString(story);
         }
 
+        public static string SerializeStoryElementCollectionToJSON(StoryElementCollectionDataModel elementCol)
+        {
+            return DataModelPersistence.WriteStoryElementCollectionToString(elementCol);
+        }
+
+
         public static StoryDataModel? DeserializeStoryFromJSON(string json)
         {
             return DataModelPersistence.ReadStoryFromString(json);
         }
 
-        public static string GetTestStoryJSON()
+        public static StoryElementCollectionDataModel? DeserializeStoryElementCollectionFromJSON(string json)
         {
-            /////////////////////////////////////////////////////////////////////////////
+            return DataModelPersistence.ReadStoryElementCollectionFromString(json);
+        }
 
+        /////////////////////////////////////////////////////////////////////////////
+
+        public static string GetTestStoryElementCollectionJSON()
+        {
             List<StoryElementDataModel> storyElements = new List<StoryElementDataModel>();
 
             storyElements.Add(new StoryElementDataModel("heroTheme", "themes", "heroism", ElementTypeDataModel.quantifiable));
@@ -325,6 +279,12 @@ namespace StoryEngine
 
             StoryElementCollectionDataModel elements = new StoryElementCollectionDataModel(storyElements);
 
+            return DataModelPersistence.WriteStoryElementCollectionToString(elements);
+        }
+
+
+        public static string GetTestStoryJSON()
+        {
             /////////////////////////////////////////////////////////////////////////////
 
             Dictionary<string, float> values = new Dictionary<string, float>();
@@ -364,8 +324,9 @@ namespace StoryEngine
             List<string> funcDescTags = new List<string>();
             funcDescTags.Add("sunnyWeather");
 
-            FunctionalDescriptionDataModel funcDesc = new FunctionalDescriptionDataModel(funcDescElementProminences)
+            FunctionalDescriptionDataModel funcDesc = new FunctionalDescriptionDataModel()
             {
+                ElementProminences = funcDescElementProminences,
                 TaggableElementIDs = funcDescTags
             };
 

@@ -4,6 +4,8 @@ using System.Linq;
 using StoryEngine.StoryNodes;
 using StoryEngine.StoryElements;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryFundamentals
 {
     internal class Story
@@ -26,7 +28,7 @@ namespace StoryEngine.StoryFundamentals
         protected int _numKernelsConsumed;
         
         // @Element(name="startingNode", required=false)
-        protected StoryNode _startingNode;	
+        protected StoryNode? _startingNode;	
         
         // @Element(name="initialStoryState")
         protected StoryState _storyState;
@@ -51,7 +53,7 @@ namespace StoryEngine.StoryFundamentals
             StoryElementCollection elements,
             int numTopScenesForUser,
             List<StoryNode> nodes,
-            StoryNode startingNode,
+            StoryNode? startingNode,
             StoryState initStoryState,
             PrioritizationType prioritizationType = PrioritizationType.sumOfCategoryMaximums,
             List<GlobalRule>? globalRules = null
@@ -88,30 +90,29 @@ namespace StoryEngine.StoryFundamentals
             CalculateSumProminencesWithElementAndTotal();
         }
 
-
         /////////////////////////////////////////////////////////////
 
-        public float DesireForElement(string id)
+        internal float DesireForElement(string id)
         {
             return _storyState.ValueForElement(id);
         }
 
-        public float LargestDesireValue()
+        internal float LargestDesireValue()
         {
             return _storyState.LargestDesireValue();
         }
 
-        public MemoryFunction MemoryFunctionForElement(string id)
+        internal MemoryFunction MemoryFunctionForElement(string id)
         {
             return _storyState.MemoryFunctionForElement(id);
         }
 
-        public float StoryStateOnlyElementValue(string id)
+        internal float StoryStateOnlyElementValue(string id)
         {
             return _storyState.ValueForElement(id);
         }
 
-        public int NumNodesWithElement(string id)
+        internal int NumNodesWithElement(string id)
         {
             int num = 0;
 
@@ -123,7 +124,7 @@ namespace StoryEngine.StoryFundamentals
             return num;
         }
 
-        public float SumOfProminenceValuesForElement(string id)
+        internal float SumOfProminenceValuesForElement(string id)
         {
             float sum = 0;
 
@@ -135,22 +136,22 @@ namespace StoryEngine.StoryFundamentals
             return sum;
         }
 
-        public float TotalProminenceValues()
+        internal float TotalProminenceValues()
         {
             return _totalAllProminences;
         }
 
-        public float ProminenceForMostRecentNodeWithElement(string elementID)
+        internal float ProminenceForMostRecentNodeWithElement(string elementID)
         {
             return _storyState.ProminenceForMostRecentNodeWithElement(elementID);
         }
 
-        public List<StoryNode> ScenesSeen()
+        internal List<StoryNode> ScenesSeen()
         {
             return _storyState.ScenesSeen();
         }
 
-        public StoryNode? NodeWithID(string id)
+        internal StoryNode? NodeWithID(string id)
         {
             StoryNode? nodeWithID = null;
 
@@ -217,16 +218,16 @@ namespace StoryEngine.StoryFundamentals
 
         // Could be null at the beginning of the story, in which case the caller
         // should get and present current scene options
-        public StoryNode? NodeBeingConsumed() { return _nodeBeingConsumed; }
+        internal StoryNode? NodeBeingConsumed() { return _nodeBeingConsumed; }
 
 
         // Select the next node to consume
-        public void StartConsumingNode(StoryNode node) { _nodeBeingConsumed = node; }
+        internal void StartConsumingNode(StoryNode node) { _nodeBeingConsumed = node; }
 
 
         // Call this after a node has been presented to a user to apply its
         // outcome to the story state
-        public void ApplyOutcomeAndAdjustQuantifiableValues()
+        internal void ApplyOutcomeAndAdjustQuantifiableValues()
         {
             if (_nodeBeingConsumed != null)
             {
@@ -238,7 +239,7 @@ namespace StoryEngine.StoryFundamentals
             }
             else
             {
-                System.Console.WriteLine("Could not apply outcome or adjust quantifiable values because " +
+                StoryEngineAPI.Logger?.Write("Could not apply outcome or adjust quantifiable values because " +
                                          "node being consumed is null.");
             }
         }
@@ -246,7 +247,7 @@ namespace StoryEngine.StoryFundamentals
 
         // Finalize consumption after all outcomes are applied, and return
         // whether the node is the last one in the story
-        public bool FinishConsumingNode()
+        internal bool FinishConsumingNode()
         {
             bool lastNode = false;
 
@@ -287,13 +288,13 @@ namespace StoryEngine.StoryFundamentals
 
 
         // Returns a collection of available kernel nodes
-        public List<StoryNode> AvailableKernelNodes()
+        internal List<StoryNode> AvailableKernelNodes()
         {
             return AvailableNodes(true, false);
         }
 
         // Returns a collection of available satellite nodes
-        public List<StoryNode> AvailableSatelliteNodes()
+        internal List<StoryNode> AvailableSatelliteNodes()
         {
             return AvailableNodes(false, true);
         }
@@ -303,18 +304,18 @@ namespace StoryEngine.StoryFundamentals
         // Returns an up-to-date list of the top available story nodes that
         // can be presented to a user...default is to include a kernel
 
-        public List<StoryNode> CurrentSceneOptions()
+        internal List<StoryNode> CurrentSceneOptions()
         {
             return CurrentSceneOptions(false);
         }
 
-        public List<StoryNode> CurrentSceneOptions(bool satellitesOnly)
+        internal List<StoryNode> CurrentSceneOptions(bool satellitesOnly)
         {
             List<StoryNode> currentSceneOptions = new List<StoryNode>();
 
             if (_elementCol == null)
             {
-                System.Console.WriteLine("Story could not return current scene options because the story"
+                StoryEngineAPI.Logger?.Write("Story could not return current scene options because the story"
                         + " element collection is not available.");
             }
             else
@@ -332,7 +333,7 @@ namespace StoryEngine.StoryFundamentals
 
 
         // Reset all values so the story can be re-run
-        public void Reset()
+        internal void Reset()
         {
             _nodeBeingConsumed = null;
             //_nodePrioritizer = new NodePrioritizer(this); // TODO
@@ -385,6 +386,46 @@ namespace StoryEngine.StoryFundamentals
                     _sumProminencesForNodesWithElement[id] = totalProminence;
                 }
             }
+        }
+
+
+        /////////////////////////////////////////////////////////////
+
+        internal static Story InitializeFromDataModel(StoryDataModel storyModel, StoryElementCollectionDataModel elementColModel)
+        {
+            StoryElementCollection newElementCol = StoryElementCollection.InitializeFromDataModel(elementColModel);
+
+            List<StoryNode> newNodes = new List<StoryNode>();
+            foreach (StoryNodeDataModel nodeModel in storyModel.Nodes)
+            {
+                newNodes.Add(StoryNode.InitializeFromDataModel(nodeModel));
+            }
+
+            StoryNode? newStartingNode = null;
+            if (storyModel.StartingNode is not null) newStartingNode = StoryNode.InitializeFromDataModel(storyModel.StartingNode);
+
+            return new Story(
+                newElementCol,
+                storyModel.NumTopScenesForUser,
+                newNodes,
+                newStartingNode,
+                StoryState.InitializeFromDataModel(storyModel.InitialStoryState));
+        }
+
+        internal StoryDataModel DataModel()
+        {
+            List<StoryNodeDataModel> nodeDataModelList = new List<StoryNodeDataModel>();
+            foreach (StoryNode node in _nodes)
+            {
+                nodeDataModelList.Add(node.DataModel());
+            }
+
+            return new StoryDataModel(_numTopScenesForUser, nodeDataModelList, _initialStoryState.DataModel());
+        }
+
+        internal StoryElementCollectionDataModel ElementCollectionDataModel()
+        {
+            return _elementCol.DataModel();
         }
     }
 }

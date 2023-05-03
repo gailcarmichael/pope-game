@@ -4,12 +4,15 @@ using System;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryFundamentals;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {
     internal class FunctionalDescription
     {
         //@ElementMap(required = false, inline = true, entry = "prominence", key = "id", attribute = true)
         protected Dictionary<string, int> _elementProminences;
+        internal Dictionary<string, int> ElementProminences => _elementProminences;
 
         //@ElementList(required = false, inline = true) - note, changed to be strings instead of Tags
         protected List<string> _elementIDs;
@@ -44,7 +47,7 @@ namespace StoryEngine.StoryNodes
             }
             else
             {
-                System.Console.WriteLine("Could not add id " + elementID + " to functional" +
+                StoryEngineAPI.Logger?.Write("Could not add id " + elementID + " to functional" +
                                 " description because it does not exist, or because it" +
                                 " is not quantifiable.");
             }
@@ -63,7 +66,7 @@ namespace StoryEngine.StoryNodes
             }
             else
             {
-                System.Console.WriteLine("Could not add id " + elementID + " to functional" +
+                StoryEngineAPI.Logger?.Write("Could not add id " + elementID + " to functional" +
                                 " description because it does not exist, or because it" +
                                 " is quantifiable when it shouldn't be.");
             }
@@ -93,14 +96,14 @@ namespace StoryEngine.StoryNodes
                     StoryElement? e = elements.ElementWithID(id);
                     if (e == null)
                     {
-                        System.Console.WriteLine("FunctionalDescription is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("FunctionalDescription is not valid because element" +
                                 " with id " + id + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (e.Type !=
                             ElementType.quantifiable)
                     {
-                        System.Console.WriteLine("FunctionalDescription is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("FunctionalDescription is not valid because element" +
                                 " with id " + id + "  is not " + ElementType.quantifiable);
                         isValid = false;
                     }
@@ -111,14 +114,14 @@ namespace StoryEngine.StoryNodes
                     StoryElement? element = elements.ElementWithID(id);
                     if (element == null)
                     {
-                        System.Console.WriteLine("FunctionalDescription is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("FunctionalDescription is not valid because element" +
                                 " with id " + id + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (element.Type !=
                             ElementType.taggable)
                     {
-                        System.Console.WriteLine("FunctionalDescription is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("FunctionalDescription is not valid because element" +
                                 " with id " + id + "  is not " + ElementType.taggable);
                         isValid = false;
                     }
@@ -175,7 +178,7 @@ namespace StoryEngine.StoryNodes
                     return CalculateEventBasedScore(story, elementCol);
 
                 default:
-                    System.Console.WriteLine("Cannot calculate priority score because " + story.PrioritizationType +
+                    StoryEngineAPI.Logger?.Write("Cannot calculate priority score because " + story.PrioritizationType +
                             " is not a valid prioritization type.");
                     return -1;
             }
@@ -281,6 +284,56 @@ namespace StoryEngine.StoryNodes
                     state.ResetDesireValue(id);
                 }
             }
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static FunctionalDescription InitializeFromDataModel(FunctionalDescriptionDataModel nodeModel)
+        {
+            FunctionalDescription newFuncDesc = new FunctionalDescription();
+
+            if (nodeModel.ElementProminences is not null)
+            {
+                newFuncDesc._elementProminences = new Dictionary<string, int>(nodeModel.ElementProminences);
+            }
+
+            if (nodeModel.TaggableElementIDs is not null)
+            {
+                newFuncDesc._elementIDs = new List<string>(nodeModel.TaggableElementIDs);
+            }
+
+            return newFuncDesc;
+        }
+
+        internal FunctionalDescriptionDataModel DataModel()
+        {
+            Dictionary<string, int>? newElementProminences = null;
+            if (_elementProminences is not null && _elementProminences.Count > 0)
+            {
+                newElementProminences = new Dictionary<string, int>();
+                foreach (var elementProm in _elementProminences)
+                {
+                    newElementProminences.Add(elementProm.Key, elementProm.Value);
+                }
+            }
+
+            List<string>? newTaggableElements = null;
+            if (_elementIDs is not null && _elementIDs.Count > 0)
+            {
+                newTaggableElements = new List<string>();
+                foreach (var element in _elementIDs)
+                {
+                    newTaggableElements.Add(element);
+                }
+            }
+
+            return new FunctionalDescriptionDataModel()
+            {
+                ElementProminences = newElementProminences,
+                TaggableElementIDs = newTaggableElements
+            };
         }
         
     }

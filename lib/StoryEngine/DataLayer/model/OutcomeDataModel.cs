@@ -8,18 +8,8 @@ public record OutcomeDataModel(string Text)
     internal List <TagModifierDataModel>? TagModifiers {get; init; } //optional
 }
 
-internal struct QuantifiableModifierDataModel
+internal record QuantifiableModifierDataModel(string ElementID, bool Absolute, int Delta)
 {
-    internal string elementID;
-    internal bool absolute;
-    internal int delta;
-
-    internal QuantifiableModifierDataModel(string new_elementID, bool new_absolute, int new_delta)
-    {
-        elementID = new_elementID;
-        absolute = new_absolute;
-        delta = new_delta;
-    }
 }
 
 internal enum TagActionDataModel
@@ -28,14 +18,6 @@ internal enum TagActionDataModel
     remove
 }
 
-internal struct TagModifierDataModel
+internal record TagModifierDataModel(string ElementID, TagActionDataModel Action)
 {
-    internal string elementID;
-    internal TagActionDataModel action;
-
-    internal TagModifierDataModel(string new_elementID, TagActionDataModel new_action)
-    {
-        elementID = new_elementID;
-        action = new_action;
-    }
 }

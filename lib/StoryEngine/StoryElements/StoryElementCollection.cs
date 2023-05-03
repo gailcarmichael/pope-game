@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryElements
 {
     internal class StoryElementCollection
@@ -35,7 +37,7 @@ namespace StoryEngine.StoryElements
         {
             foreach (StoryElement e in _storyElements)
             {
-                System.Console.WriteLine(e);
+                StoryEngineAPI.Logger?.Write(e);
             }
         }
         
@@ -67,7 +69,7 @@ namespace StoryEngine.StoryElements
             {
                 if (ids.Contains(el.ID))
                 {
-                    System.Console.WriteLine("IDs found duplicate story element id: " + el.ID);
+                    StoryEngineAPI.Logger?.Write("IDs found duplicate story element id: " + el.ID);
                 }
                 else
                 {
@@ -87,7 +89,7 @@ namespace StoryEngine.StoryElements
             {
                 if (ids.Contains(el.ID))
                 {
-                    System.Console.WriteLine("DesireValueIDs found duplicate story element id: " + el.ID);
+                    StoryEngineAPI.Logger?.Write("DesireValueIDs found duplicate story element id: " + el.ID);
                 }
                 else if (el.HasDesireValue())
                 {
@@ -119,7 +121,7 @@ namespace StoryEngine.StoryElements
             }
             else
             {
-                System.Console.WriteLine("Could not add element with id " + e.ID +
+                StoryEngineAPI.Logger?.Write("Could not add element with id " + e.ID +
                                          " to collection because it already exists.");
             }
             
@@ -133,6 +135,36 @@ namespace StoryEngine.StoryElements
             StoryElementCollection collection = new StoryElementCollection(new List<StoryElement>(_storyElements));
             
             return collection;
+        }
+        
+        /////////////////////////////////////////////////////////////
+
+        internal static StoryElementCollection InitializeFromDataModel(StoryElementCollectionDataModel elementColModel)
+        {
+            StoryElementCollection newElementCol = new StoryElementCollection();
+            if (elementColModel.StoryElements is not null)
+            {
+                foreach (StoryElementDataModel elementModel in elementColModel.StoryElements)
+                {
+                    newElementCol.Add(StoryElement.InitializeFromDataModel(elementModel));
+                }
+            }
+
+            return newElementCol;
+        }
+
+        internal StoryElementCollectionDataModel DataModel()
+        {
+            List <StoryElementDataModel> newElementList = new List<StoryElementDataModel>();
+            if (_storyElements is not null)
+            {
+                foreach (StoryElement elementModel in _storyElements)
+                {
+                    newElementList.Add(elementModel.DataModel());
+                }
+            }
+
+            return new StoryElementCollectionDataModel(newElementList);
         }
     }
 }

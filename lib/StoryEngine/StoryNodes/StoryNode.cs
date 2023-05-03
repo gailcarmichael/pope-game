@@ -4,6 +4,10 @@ using StoryEngine.StoryElements;
 using System.Collections.Generic;
 using System.Linq;
 
+using StoryEngine.StoryEngineDataModel;
+
+//TODO: need a way to represent dialog between characters
+
 namespace StoryEngine.StoryNodes
 {
     internal class StoryNode
@@ -324,6 +328,72 @@ namespace StoryEngine.StoryNodes
         {
             _consumed = false;
             _selectedChoiceIndex = -1;
+        }
+
+
+        ////////////////////////////////////////////////////////////////
+
+
+        internal static StoryNode InitializeFromDataModel(StoryNodeDataModel nodeModel)
+        {
+            NodeType newType = NodeType.satellite;
+            if (nodeModel.Type == NodeTypeDataModel.kernel) newType = NodeType.kernel;
+
+            FunctionalDescription? newFuncDesc = null;
+            if (nodeModel.FunctionalDescription is not null)
+            {
+                newFuncDesc = FunctionalDescription.InitializeFromDataModel(nodeModel.FunctionalDescription);
+            }
+
+            Prerequisite? newPreq = null;
+            if (nodeModel.Prerequisite is not null)
+            {
+                newPreq = Prerequisite.InitializeFromDataModel(nodeModel.Prerequisite);
+            }
+
+            List<Choice> choices = new List<Choice>();
+            if (nodeModel.Choices is not null)
+            {
+                foreach (ChoiceDataModel choiceModel in nodeModel.Choices)
+                {
+                    choices.Add(Choice.InitializeFromDataModel(choiceModel));
+                }
+            }
+
+            return new StoryNode(
+                nodeModel.ID,
+                newType,
+                nodeModel.TeaserText,
+                //string teaserImage, //not currently using this
+                nodeModel.EventText,
+                newFuncDesc,
+                newPreq,
+                choices,
+                nodeModel.LastNode
+            );
+        }
+
+        internal StoryNodeDataModel DataModel()
+        {
+            NodeTypeDataModel newType = NodeTypeDataModel.satellite;
+            if (_type == NodeType.kernel) newType = NodeTypeDataModel.kernel;
+
+            List<ChoiceDataModel>? choices = null;
+            if (_choices is not null && _choices.Any())
+            {
+                choices = new List<ChoiceDataModel>();
+                foreach (Choice c in _choices)
+                {
+                    choices.Add(c.DataModel());
+                }
+            }
+
+            return new StoryNodeDataModel(_id, newType, _teaserText, _eventText, _isLastNode)
+            {
+                FunctionalDescription = _functionalDesc?.DataModel() ??  null,
+                Prerequisite = _prerequisite?.DataModel() ?? null,
+                Choices = choices
+            };
         }
     }
 }

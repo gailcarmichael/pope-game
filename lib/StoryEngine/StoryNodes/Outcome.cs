@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using StoryEngine.StoryElements;
 using StoryEngine.StoryFundamentals;
 
+using StoryEngine.StoryEngineDataModel;
+
 namespace StoryEngine.StoryNodes
 {    
     // An outcome specifies what happens after a choice is made in 
@@ -79,14 +81,14 @@ namespace StoryEngine.StoryNodes
                     StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
                     if (elementWithID == null)
                     {
-                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Quantifiable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (elementWithID.Type != ElementType.quantifiable &&
                              elementWithID.Type != ElementType.quantifiableStoryStateOnly)
                     {
-                        System.Console.WriteLine("Quantifiable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Quantifiable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  has type " +
                                 elementWithID.Type);
                         isValid = false;
@@ -103,13 +105,13 @@ namespace StoryEngine.StoryNodes
                     StoryElement? elementWithID = elements.ElementWithID(modifier.ElementID);
                     if (elementWithID == null)
                     {
-                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Taggable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  is not part of the element collection.");
                         isValid = false;
                     }
                     else if (elementWithID.Type != ElementType.taggable)
                     {
-                        System.Console.WriteLine("Taggable modifier is not valid because element" +
+                        StoryEngineAPI.Logger?.Write("Taggable modifier is not valid because element" +
                                 " with id " + modifier.ElementID + "  has type " +
                                 elementWithID.Type);
                         isValid = false;
@@ -158,6 +160,65 @@ namespace StoryEngine.StoryNodes
                 }
             }
         }
+
+        //////////////////////////////////////////////////////////////////////////////////////
+
+
+        internal static Outcome InitializeFromDataModel(OutcomeDataModel model)
+        {
+            List<QuantifiableModifier> quantMods = new List<QuantifiableModifier>();
+            if (model.QuantifiableModifiers is not null)
+            {
+                foreach (QuantifiableModifierDataModel qm in model.QuantifiableModifiers)
+                {
+                    quantMods.Add(QuantifiableModifier.InitializeFromDataModel(qm));
+                }
+            }
+
+            List<TagModifier> tagMods = new List<TagModifier>();
+            if (model.TagModifiers is not null)
+            {
+                foreach (TagModifierDataModel tm in model.TagModifiers)
+                {
+                    tagMods.Add(TagModifier.InitializeFromDataModel(tm));
+                }
+            }
+
+            return new Outcome(
+                model.Text,
+                quantMods,
+                tagMods
+            );
+        }
+
+        internal OutcomeDataModel DataModel()
+        {
+            List<QuantifiableModifierDataModel>? quantList = null;
+            if (_quantifiableModifiers is not null && _quantifiableModifiers.Count > 0)
+            {
+                quantList = new List<QuantifiableModifierDataModel>();
+                foreach(QuantifiableModifier modifier in _quantifiableModifiers)
+                {
+                    quantList.Add(modifier.DataModel());
+                }
+            }
+
+            List<TagModifierDataModel>? tagList = null;
+            if (_quantifiableModifiers is not null && _quantifiableModifiers.Count > 0)
+            {
+                tagList = new List<TagModifierDataModel>();
+                foreach (TagModifier modifier in _taggableModifiers)
+                {
+                    tagList.Add(modifier.DataModel());
+                }
+            }
+
+            return new OutcomeDataModel(_outcomeText ?? "")
+            {
+                QuantifiableModifiers = quantList,
+                TagModifiers = tagList
+            };
+        }
         
 
         //////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +244,16 @@ namespace StoryEngine.StoryNodes
                 _elementID = id;
                 _absolute = absolute;
                 _delta = delta;
+            }
+
+            internal static QuantifiableModifier InitializeFromDataModel(QuantifiableModifierDataModel model)
+            {
+                return new QuantifiableModifier(model.ElementID, model.Absolute, model.Delta);
+            }
+
+            internal QuantifiableModifierDataModel DataModel()
+            {
+                return new QuantifiableModifierDataModel(_elementID, _absolute, _delta);
             }
         }
 
@@ -216,6 +287,44 @@ namespace StoryEngine.StoryNodes
             {
                 _elementID = id;
                 _action = action;
+            }
+
+            internal static TagModifier InitializeFromDataModel(TagModifierDataModel model)
+            {
+                TagAction action;
+                switch (model.Action)
+                {
+                    case TagActionDataModel.add:
+                        action = TagAction.add;
+                        break;
+                    case TagActionDataModel.remove:
+                        action = TagAction.remove;
+                        break;
+                    default:
+                        action = TagAction.add;
+                        break;
+                }
+
+                return new TagModifier(model.ElementID, action);
+            }
+
+            internal TagModifierDataModel DataModel()
+            {
+                TagActionDataModel action;
+                switch (Action)
+                {
+                    case TagAction.add:
+                        action = TagActionDataModel.add;
+                        break;
+                    case TagAction.remove:
+                        action = TagActionDataModel.remove;
+                        break;
+                    default:
+                        action = TagActionDataModel.add;
+                        break;
+                }
+
+                return new TagModifierDataModel(_elementID, action);
             }
         }
     }
